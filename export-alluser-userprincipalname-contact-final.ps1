@@ -14,60 +14,16 @@ $scriptDir = if ($PSScriptRoot) {$PSScriptRoot} else {(Get-Location).Path}
 $outputFileName = "Output_${scriptName}_${timestamp}.csv"
 $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 
-## -----------------------------------------------------------------------
-## 1. PRASYARAT DAN INSTALASI MODUL
-## -----------------------------------------------------------------------
-Write-Host "--- 1. Memeriksa dan Menyiapkan Lingkungan PowerShell ---" -ForegroundColor Blue 
-
-# 1.1. Mengatur Execution Policy 
-Write-Host "1.1. Mengatur Execution Policy ke RemoteSigned..." -ForegroundColor Cyan 
-try { 
-    Set-ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction Stop 
-    Write-Host "Execution Policy berhasil diatur." -ForegroundColor Green 
-} catch { 
-    Write-Error "Gagal mengatur Execution Policy: $($_.Exception.Message)" 
-    exit 1 
-} 
-
-# 1.2. Fungsi Pembantu Modul 
-function CheckAndInstallModule { 
-    param( [Parameter(Mandatory=$true)] [string]$ModuleName ) 
-    Write-Host "1.$(++$global:moduleStep). Memeriksa Modul '$ModuleName'..." -ForegroundColor Cyan 
-    if (Get-Module -Name $ModuleName -ListAvailable) { 
-        Write-Host "Modul '$ModuleName' sudah terinstal." -ForegroundColor Green 
-    } else { 
-        Write-Host "Modul '$ModuleName' belum ditemukan. Memulai instalasi..." -ForegroundColor Yellow 
-        try { 
-            Install-Module -Name $ModuleName -Force -AllowClobber -Scope CurrentUser -ErrorAction Stop 
-            Write-Host "Modul '$ModuleName' berhasil diinstal." -ForegroundColor Green 
-        } catch { 
-            Write-Error "Gagal menginstal modul '$ModuleName'." 
-            exit 1 
-        } 
-    } 
-} 
-
-CheckAndInstallModule -ModuleName "Microsoft.Graph" 
 
 ## -----------------------------------------------------------------------
-## 2. KONEKSI WAJIB (MICROSOFT GRAPH)
+## 2. PRASYARAT DAN KONEKSI
 ## -----------------------------------------------------------------------
-Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue 
 
+Write-Host "--- 1. Menyiapkan Lingkungan ---" -ForegroundColor Blue 
 if (-not (Get-MgContext -ErrorAction SilentlyContinue)) { 
-    Write-Host "Menghubungkan ke Microsoft Graph. Silakan login..." -ForegroundColor Yellow 
-    try { 
-        $scopes = @("User.Read.All")
-        # Ditambahkan | Out-Null agar tidak tumpah detail login ke konsol
-        Connect-MgGraph -Scopes $scopes -ErrorAction Stop | Out-Null
-        Write-Host "Koneksi Berhasil." -ForegroundColor Green 
-    } catch { 
-        Write-Error "Gagal terhubung: $($_.Exception.Message)" 
-        exit 1 
-    } 
-} else { 
-    Write-Host "Sesi Microsoft Graph sudah aktif." -ForegroundColor Green 
-} 
+    Connect-MgGraph -Scopes "User.Read.All" -ErrorAction Stop | Out-Null
+}
+
 
 ## -----------------------------------------------------------------------
 ## 3. LOGIKA UTAMA SCRIPT
