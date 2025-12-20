@@ -18,12 +18,12 @@ $requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
 Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
 
 if (Get-MgContext -ErrorAction SilentlyContinue) {
-    Write-Host "✅ Sesi Microsoft Graph aktif." -ForegroundColor Green
+    Write-Host "Sesi Microsoft Graph aktif." -ForegroundColor Green
 } else {
     Write-Host "Menghubungkan ke Microsoft Graph..." -ForegroundColor Cyan
     try {
         Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
-        Write-Host "✅ Koneksi Berhasil." -ForegroundColor Green
+        Write-Host "Koneksi Berhasil." -ForegroundColor Green
     } catch {
         Write-Error "Gagal terhubung ke Microsoft Graph."
         return
@@ -39,7 +39,7 @@ $operationChoice = Read-Host "Pilih operasi: (1) Assign License | (2) Remove Lic
 switch ($operationChoice) {
     "1" { $operationType = "ASSIGN" }
     "2" { $operationType = "REMOVE" }
-    default { Write-Host "❌ Pilihan tidak valid." -ForegroundColor Red; return }
+    default { Write-Host "Pilihan tidak valid." -ForegroundColor Red; return }
 }
 
 try {
@@ -59,7 +59,7 @@ try {
     $selectedLicense = $promptOptions[[int]$choiceInput]
     $skuPartNumberTarget = $selectedLicense.SkuPartNumber
 } catch {
-    Write-Host "❌ Error: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
     return
 }
 
@@ -70,7 +70,7 @@ $allResults = @()
 $timestamp = Get-Date -Format "yyyyMMdd_HHmm"
 
 if (-not (Test-Path -Path $inputFilePath)) {
-    Write-Host "❌ File ${inputFileName} tidak ditemukan di ${scriptDir}!" -ForegroundColor Red
+    Write-Host "File ${inputFileName} tidak ditemukan di ${scriptDir}!" -ForegroundColor Red
     return
 }
 
@@ -130,7 +130,7 @@ foreach ($entry in $users) {
         }
     }
     catch {
-        Write-Host "   ❌ Gagal: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "Gagal: $($_.Exception.Message)" -ForegroundColor Red
         $allResults += [PSCustomObject]@{
             UserPrincipalName = $userUpn
             DisplayName       = "Error/Not Found"
@@ -149,7 +149,7 @@ if ($allResults.Count -gt 0) {
     $resultsFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
     $allResults | Export-Csv -Path $resultsFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
     
-    Write-Host "`n✅ Semua proses selesai!" -ForegroundColor Green
+    Write-Host "`nSemua proses selesai!" -ForegroundColor Green
     Write-Host "Laporan tersimpan di: ${resultsFilePath}" -ForegroundColor Cyan
 }
 

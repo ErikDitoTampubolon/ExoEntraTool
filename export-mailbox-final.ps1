@@ -53,7 +53,7 @@ try {
 
     $scriptOutput = $mailboxData
     $totalMailboxes = $scriptOutput.Count
-    Write-Host "   ✅ Ditemukan $($totalMailboxes) Mailbox untuk diekspor." -ForegroundColor Green
+    Write-Host "  Ditemukan $($totalMailboxes) Mailbox untuk diekspor." -ForegroundColor Green
     
 }
 catch {
@@ -81,14 +81,14 @@ if ($scriptOutput.Count -gt 0) {
     try {
         # Menggunakan Export-Csv ke $outputFilePath
         $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Encoding UTF8 -Delimiter "," -ErrorAction Stop
-        Write-Host " ✅ Data berhasil diekspor ke:" -ForegroundColor Green
+        Write-Host " Data berhasil diekspor ke:" -ForegroundColor Green
         Write-Host " $outputFilePath" -ForegroundColor Green
     }
     catch {
         Write-Error "Gagal mengekspor data ke CSV: $($_.Exception.Message)"
     }
 } else {
-    Write-Host " ⚠️ Tidak ada data yang dikumpulkan (\$scriptOutput kosong). Melewati ekspor." -ForegroundColor DarkYellow
+    Write-Host " Tidak ada data yang dikumpulkan (\$scriptOutput kosong). Melewati ekspor." -ForegroundColor DarkYellow
 }
 
 # 4.2. Memutus koneksi Exchange Online - BAGIAN INI DIKOMENTARI
@@ -96,8 +96,8 @@ if ($scriptOutput.Count -gt 0) {
 if (Get-PSSession | Where-Object {$_.ConfigurationName -eq "Microsoft.Exchange"}) {
 #    Write-Host "Memutuskan koneksi dari Exchange Online..." -ForegroundColor DarkYellow
 #    Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
-#    Write-Host " ✅ Koneksi Exchange Online diputus." -ForegroundColor Green
-    Write-Host " ⚠️ Koneksi Exchange Online dipertahankan agar skrip berikutnya tidak perlu login ulang." -ForegroundColor DarkYellow
+#    Write-Host " Koneksi Exchange Online diputus." -ForegroundColor Green
+    Write-Host " Koneksi Exchange Online dipertahankan agar skrip berikutnya tidak perlu login ulang." -ForegroundColor DarkYellow
 }
 
 

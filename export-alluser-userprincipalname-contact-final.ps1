@@ -23,7 +23,7 @@ Write-Host "--- 1. Memeriksa dan Menyiapkan Lingkungan PowerShell ---" -Foregrou
 Write-Host "1.1. Mengatur Execution Policy ke RemoteSigned..." -ForegroundColor Cyan 
 try { 
     Set-ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction Stop 
-    Write-Host " ✅ Execution Policy berhasil diatur." -ForegroundColor Green 
+    Write-Host "Execution Policy berhasil diatur." -ForegroundColor Green 
 } catch { 
     Write-Error "Gagal mengatur Execution Policy: $($_.Exception.Message)" 
     exit 1 
@@ -34,12 +34,12 @@ function CheckAndInstallModule {
     param( [Parameter(Mandatory=$true)] [string]$ModuleName ) 
     Write-Host "1.$(++$global:moduleStep). Memeriksa Modul '$ModuleName'..." -ForegroundColor Cyan 
     if (Get-Module -Name $ModuleName -ListAvailable) { 
-        Write-Host " ✅ Modul '$ModuleName' sudah terinstal." -ForegroundColor Green 
+        Write-Host "Modul '$ModuleName' sudah terinstal." -ForegroundColor Green 
     } else { 
-        Write-Host " ⚠️ Modul '$ModuleName' belum ditemukan. Memulai instalasi..." -ForegroundColor Yellow 
+        Write-Host "Modul '$ModuleName' belum ditemukan. Memulai instalasi..." -ForegroundColor Yellow 
         try { 
             Install-Module -Name $ModuleName -Force -AllowClobber -Scope CurrentUser -ErrorAction Stop 
-            Write-Host " ✅ Modul '$ModuleName' berhasil diinstal." -ForegroundColor Green 
+            Write-Host "Modul '$ModuleName' berhasil diinstal." -ForegroundColor Green 
         } catch { 
             Write-Error "Gagal menginstal modul '$ModuleName'." 
             exit 1 
@@ -60,13 +60,13 @@ if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
         $scopes = @("User.Read.All")
         # Ditambahkan | Out-Null agar tidak tumpah detail login ke konsol
         Connect-MgGraph -Scopes $scopes -ErrorAction Stop | Out-Null
-        Write-Host "✅ Koneksi Berhasil." -ForegroundColor Green 
+        Write-Host "Koneksi Berhasil." -ForegroundColor Green 
     } catch { 
         Write-Error "Gagal terhubung: $($_.Exception.Message)" 
         exit 1 
     } 
 } else { 
-    Write-Host "✅ Sesi Microsoft Graph sudah aktif." -ForegroundColor Green 
+    Write-Host "Sesi Microsoft Graph sudah aktif." -ForegroundColor Green 
 } 
 
 ## -----------------------------------------------------------------------
@@ -83,7 +83,7 @@ try {
     $allUsers = Get-MgUser -Filter "accountEnabled eq true" -All -Property $selectProperties -ErrorAction Stop
     
     $totalUsers = $allUsers.Count
-    Write-Host " ✅ Berhasil menemukan ${totalUsers} pengguna aktif." -ForegroundColor Green
+    Write-Host "Berhasil menemukan ${totalUsers} pengguna aktif." -ForegroundColor Green
     
     $i = 0
     foreach ($user in $allUsers) {
@@ -119,7 +119,7 @@ if ($scriptOutput.Count -gt 0) {
     try { 
         # Delimiter titik koma (;) agar otomatis rapi saat dibuka di Excel Indonesia
         $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8 -ErrorAction Stop 
-        Write-Host " ✅ Laporan berhasil disimpan di:" -ForegroundColor Green 
+        Write-Host " Laporan berhasil disimpan di:" -ForegroundColor Green 
         Write-Host " $outputFilePath" -ForegroundColor Cyan 
     } 
     catch { 

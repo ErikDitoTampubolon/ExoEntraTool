@@ -41,7 +41,7 @@ if (-not (Test-Path -Path $inputFilePath)) {
     $userCount = 0
 
     if ($totalUsers -eq 0) {
-        Write-Host "⚠️ File CSV kosong." -ForegroundColor Yellow
+        Write-Host "File CSV kosong." -ForegroundColor Yellow
     }
     
     Write-Host "Total ${totalUsers} pengguna ditemukan." -ForegroundColor Yellow
@@ -84,11 +84,11 @@ if (-not (Test-Path -Path $inputFilePath)) {
                     Status            = "SUCCESS"
                     Reason            = "Last Logon Time retrieved."
                 }
-                Write-Host "   ✅ Last Logon: ${lastLogon}" -ForegroundColor DarkGreen
+                Write-Host "Last Logon: ${lastLogon}" -ForegroundColor DarkGreen
 
             } else {
                 $reason = "Recipient type is $($recipient.RecipientType) (Not a UserMailbox)."
-                Write-Host "   ⚠️ Gagal: ${reason}" -ForegroundColor Yellow
+                Write-Host "Gagal: ${reason}" -ForegroundColor Yellow
                 $scriptOutput += [PSCustomObject]@{
                     UserPrincipalName = $upn; DisplayName = $recipient.DisplayName; LastLogonTime = "N/A"; Status = "FAIL"; Reason = $reason
                 }
@@ -98,7 +98,7 @@ if (-not (Test-Path -Path $inputFilePath)) {
             $errMsg = $_.Exception.Message
             $reason = if ($errMsg -like "*cannot be found*") { "Mailbox not found." } else { "Error: $errMsg" }
             
-            Write-Host "   ❌ ERROR: ${reason}" -ForegroundColor Red
+            Write-Host "ERROR: ${reason}" -ForegroundColor Red
             $scriptOutput += [PSCustomObject]@{
                 UserPrincipalName = $upn; DisplayName = ""; LastLogonTime = "N/A"; Status = "FAIL"; Reason = $reason
             }
@@ -115,7 +115,7 @@ if ($scriptOutput.Count -gt 0) {
     Write-Host "`nMengekspor hasil..." -ForegroundColor Yellow
     try {
         $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
-        Write-Host " ✅ Data berhasil diekspor ke: $outputFilePath" -ForegroundColor Green
+        Write-Host "Data berhasil diekspor ke: $outputFilePath" -ForegroundColor Green
     }
     catch {
         Write-Error "Gagal ekspor: $($_.Exception.Message)"

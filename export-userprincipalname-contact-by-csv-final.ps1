@@ -34,7 +34,7 @@ if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
 Write-Host "`n--- 2. Memulai Logika Utama Skrip ---" -ForegroundColor Magenta 
 
 if (-not (Test-Path $inputFilePath)) {
-    Write-Host " ❌ ERROR: File '$inputFileName' tidak ditemukan!" -ForegroundColor Red
+    Write-Host " ERROR: File '$inputFileName' tidak ditemukan!" -ForegroundColor Red
     exit 1
 }
 
@@ -42,7 +42,7 @@ if (-not (Test-Path $inputFilePath)) {
 $csvData = Import-Csv -Path $inputFilePath -Header "Email" -ErrorAction SilentlyContinue
 
 if ($null -eq $csvData -or $csvData.Count -eq 0) {
-    Write-Host " ❌ ERROR: File CSV kosong." -ForegroundColor Red
+    Write-Host " ERROR: File CSV kosong." -ForegroundColor Red
     exit 1
 }
 
@@ -77,7 +77,7 @@ foreach ($row in $csvData) {
     }
     catch {
         # FIX: Menggunakan ${i} untuk menghindari ParserError "InvalidVariableReference"
-        Write-Host " ⚠️ Baris ${i}: ${targetUser} tidak ditemukan di sistem." -ForegroundColor DarkYellow
+        Write-Host " Baris ${i}: ${targetUser} tidak ditemukan di sistem." -ForegroundColor DarkYellow
         
         $scriptOutput += [PSCustomObject]@{
             InputUser   = $targetUser
@@ -97,7 +97,7 @@ Write-Host "`n--- 3. Ekspor Hasil ---" -ForegroundColor Blue
 if ($scriptOutput.Count -gt 0) { 
     try {
         $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8 -ErrorAction Stop
-        Write-Host " ✅ Berhasil! File tersimpan di: $outputFilePath" -ForegroundColor Green 
+        Write-Host "Berhasil! File tersimpan di: $outputFilePath" -ForegroundColor Green 
     } catch {
         Write-Error "Gagal ekspor: $($_.Exception.Message)"
     }

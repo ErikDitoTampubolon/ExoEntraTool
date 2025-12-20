@@ -49,7 +49,7 @@ try {
     $rules = Get-TransportRule | Select-Object Name, State, Priority, *Conditions, *Actions, Description, WhenCreated, WhenChanged, SenderRestrictions
 
     $totalRules = $rules.Count
-    Write-Host "   ✅ Ditemukan $($totalRules) Aturan Transport." -ForegroundColor Green
+    Write-Host "Ditemukan $($totalRules) Aturan Transport." -ForegroundColor Green
     
     $i = 0
     foreach ($rule in $rules) {
@@ -137,7 +137,7 @@ if ($scriptOutput.Count -gt 0) {
     try {
         # Menggunakan pemisah koma default (,)
         $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter "," -ErrorAction Stop
-        Write-Host " ✅ Data berhasil diekspor ke:" -ForegroundColor Green
+        Write-Host " Data berhasil diekspor ke:" -ForegroundColor Green
         Write-Host " $outputFilePath" -ForegroundColor Green
     }
     catch {
@@ -152,7 +152,7 @@ if ($scriptOutput.Count -gt 0) {
 if (Get-PSSession | Where-Object {$_.ConfigurationName -eq "Microsoft.Exchange"}) {
     Write-Host "Memutuskan koneksi dari Exchange Online..." -ForegroundColor DarkYellow
     Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
-    Write-Host " ✅ Koneksi Exchange Online diputus." -ForegroundColor Green
+    Write-Host " Koneksi Exchange Online diputus." -ForegroundColor Green
 }
 
 Write-Host "`nSkrip $($scriptName) selesai dieksekusi." -ForegroundColor Yellow

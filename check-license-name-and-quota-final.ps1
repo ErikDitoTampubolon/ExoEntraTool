@@ -52,7 +52,7 @@ Write-Host $requiredScopes -ForegroundColor Yellow
 
 try {
     Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
-    Write-Host "✅ Koneksi ke Microsoft Graph berhasil!" -ForegroundColor Green
+    Write-Host "Koneksi ke Microsoft Graph berhasil!" -ForegroundColor Green
 } catch {
     Write-Error "Gagal terhubung ke Microsoft Graph. Pastikan Anda memiliki kredensial dan hak akses yang benar."
     exit 1
@@ -74,7 +74,7 @@ try {
     $subscribedSkus = Get-MgSubscribedSku -ErrorAction Stop
 
     $totalSkus = $subscribedSkus.Count
-    Write-Host "   ✅ Ditemukan $($totalSkus) SKU Lisensi Aktif." -ForegroundColor Green
+    Write-Host "Ditemukan $($totalSkus) SKU Lisensi Aktif." -ForegroundColor Green
     
     $i = 0
     foreach ($sku in $subscribedSkus) {
@@ -136,14 +136,14 @@ if ($scriptOutput.Count -gt 0 -and ($scriptOutput | Where-Object {$_.LicenseName
     Write-Host "Mengekspor $($scriptOutput.Count) baris data hasil skrip..." -ForegroundColor Yellow
     try {
         $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -ErrorAction Stop
-        Write-Host " ✅ Data berhasil diekspor ke:" -ForegroundColor Green
+        Write-Host " Data berhasil diekspor ke:" -ForegroundColor Green
         Write-Host " $outputFilePath" -ForegroundColor Green
     }
     catch {
         Write-Error "Gagal mengekspor data ke CSV: $($_.Exception.Message)"
     }
 } else {
-    Write-Host " ⚠️ Tidak ada data lisensi valid yang dikumpulkan. Melewati ekspor." -ForegroundColor DarkYellow
+    Write-Host "Tidak ada data lisensi valid yang dikumpulkan. Melewati ekspor." -ForegroundColor DarkYellow
 }
 
 # 4.2. Memutus koneksi Microsoft Graph
@@ -151,7 +151,7 @@ if ($scriptOutput.Count -gt 0 -and ($scriptOutput | Where-Object {$_.LicenseName
 if (Get-MgContext -ErrorAction SilentlyContinue) {
     Write-Host "Memutuskan koneksi dari Microsoft Graph..." -ForegroundColor DarkYellow
     Disconnect-MgGraph -ErrorAction SilentlyContinue
-    Write-Host " ✅ Koneksi Microsoft Graph diputus." -ForegroundColor Green
+    Write-Host "Koneksi Microsoft Graph diputus." -ForegroundColor Green
 }
 
 Write-Host "`nSkrip $($scriptName) selesai dieksekusi." -ForegroundColor Yellow

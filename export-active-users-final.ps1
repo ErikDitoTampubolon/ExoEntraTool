@@ -19,11 +19,11 @@ function CheckAndInstallModule {
     param( [string]$ModuleName ) 
     Write-Host "1.$(++$global:moduleStep). Memeriksa Modul '$ModuleName'..." -ForegroundColor Cyan 
     if (Get-Module -Name $ModuleName -ListAvailable) { 
-        Write-Host " ✅ Modul '$ModuleName' sudah terinstal." -ForegroundColor Green 
+        Write-Host "Modul '$ModuleName' sudah terinstal." -ForegroundColor Green 
     } else { 
-        Write-Host " ⚠️ Modul '$ModuleName' belum ditemukan. Menginstal..." -ForegroundColor Yellow 
+        Write-Host "Modul '$ModuleName' belum ditemukan. Menginstal..." -ForegroundColor Yellow 
         Install-Module -Name $ModuleName -Force -AllowClobber -Scope CurrentUser -ErrorAction Stop
-        Write-Host " ✅ Modul '$ModuleName' berhasil diinstal." -ForegroundColor Green 
+        Write-Host "Modul '$ModuleName' berhasil diinstal." -ForegroundColor Green 
     } 
 } 
 
@@ -41,13 +41,13 @@ if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
         # Menambahkan scopes yang diperlukan
         $scopes = @("User.Read.All", "Directory.Read.All", "Organization.Read.All")
         Connect-MgGraph -Scopes $scopes -ErrorAction Stop | Out-Null
-        Write-Host "✅ Koneksi Berhasil." -ForegroundColor Green 
+        Write-Host "Koneksi Berhasil." -ForegroundColor Green 
     } catch { 
         Write-Error "Gagal login: $($_.Exception.Message)" 
         exit 1 
     } 
 } else { 
-    Write-Host "✅ Sesi sudah aktif." -ForegroundColor Green 
+    Write-Host "Sesi sudah aktif." -ForegroundColor Green 
 } 
 
 
@@ -121,14 +121,14 @@ Write-Host "`n--- 4. Ekspor Hasil ---" -ForegroundColor Blue
 if ($scriptOutput.Count -gt 0) {
     try {
         $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8 -ErrorAction Stop
-        Write-Host " ✅ Laporan Kontak berhasil disimpan: $outputFilePath" -ForegroundColor Green
+        Write-Host "Laporan Kontak berhasil disimpan: $outputFilePath" -ForegroundColor Green
     }
     catch { Write-Error "Gagal simpan CSV: $($_.Exception.Message)" }
 }
 
 if (Get-MgContext -ErrorAction SilentlyContinue) {
     Disconnect-MgGraph -ErrorAction SilentlyContinue
-    Write-Host " ✅ Sesi Microsoft Graph diputus." -ForegroundColor Green
+    Write-Host "Sesi Microsoft Graph diputus." -ForegroundColor Green
 }
 
 Write-Host "`nSkrip Selesai." -ForegroundColor Yellow

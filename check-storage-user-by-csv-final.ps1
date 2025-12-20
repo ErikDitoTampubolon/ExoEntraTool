@@ -42,7 +42,7 @@ if (-not (Test-Path -Path $inputFilePath)) {
     $userCount = 0
 
     if ($totalUsers -eq 0) {
-        Write-Host "⚠️ File CSV kosong." -ForegroundColor Yellow
+        Write-Host "File CSV kosong." -ForegroundColor Yellow
     }
     
     Write-Host "Total ${totalUsers} pengguna ditemukan." -ForegroundColor Yellow
@@ -99,11 +99,11 @@ if (-not (Test-Path -Path $inputFilePath)) {
                     Status            = "SUCCESS"
                     Reason            = "Storage data collected."
                 }
-                Write-Host "   ✅ Size: ${TotalItemSizeGB} GB" -ForegroundColor DarkGreen
+                Write-Host "Size: ${TotalItemSizeGB} GB" -ForegroundColor DarkGreen
 
             } else {
                 $reason = "Recipient type is $($recipient.RecipientType) (Not a UserMailbox)."
-                Write-Host "   ⚠️ Gagal: ${reason}" -ForegroundColor Yellow
+                Write-Host "Gagal: ${reason}" -ForegroundColor Yellow
                 $scriptOutput += [PSCustomObject]@{
                     UserPrincipalName = $upn; Status = "FAIL"; Reason = $reason
                 }
@@ -111,7 +111,7 @@ if (-not (Test-Path -Path $inputFilePath)) {
         } 
         catch {
             $errMsg = $_.Exception.Message
-            Write-Host "   ❌ ERROR: ${errMsg}" -ForegroundColor Red
+            Write-Host "ERROR: ${errMsg}" -ForegroundColor Red
             $scriptOutput += [PSCustomObject]@{
                 UserPrincipalName = $upn; Status = "FAIL"; Reason = $errMsg
             }
@@ -128,7 +128,7 @@ if ($scriptOutput.Count -gt 0) {
     Write-Host "`nMengekspor hasil..." -ForegroundColor Yellow
     try {
         $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
-        Write-Host " ✅ Laporan berhasil diekspor ke: $outputFilePath" -ForegroundColor Green
+        Write-Host "Laporan berhasil diekspor ke: $outputFilePath" -ForegroundColor Green
     }
     catch {
         Write-Error "Gagal ekspor: $($_.Exception.Message)"

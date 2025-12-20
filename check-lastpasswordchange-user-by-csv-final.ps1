@@ -33,7 +33,7 @@ if (-not (Get-MgContext)) {
     Write-Host "Menghubungkan ke Microsoft Graph (Scope: User.Read.All)..." -ForegroundColor Yellow
     try {
         Connect-MgGraph -Scopes "User.Read.All" -ErrorAction Stop | Out-Null
-        Write-Host "✅ Koneksi ke Microsoft Graph berhasil dibuat." -ForegroundColor Green
+        Write-Host "Koneksi ke Microsoft Graph berhasil dibuat." -ForegroundColor Green
     } catch {
         Write-Error "Gagal terhubung ke Microsoft Graph."
         exit 1
@@ -100,11 +100,11 @@ if (-not (Test-Path -Path $inputFilePath)) {
                 LastPasswordChangeWIB = $lastChangeWIB
                 Status                = "SUCCESS"
             }
-            Write-Host "   ✅ Berhasil dikonversi ke WIB." -ForegroundColor DarkGreen
+            Write-Host "Last Logon berhasil dikonversi ke WIB." -ForegroundColor DarkGreen
         } 
         catch {
             $errMsg = $_.Exception.Message
-            Write-Host "   ❌ ERROR: $($errMsg)" -ForegroundColor Red
+            Write-Host "   ERROR: $($errMsg)" -ForegroundColor Red
             $scriptOutput += [PSCustomObject]@{
                 UserPrincipalName = $upn; Status = "FAIL"; Reason = $errMsg
             }
@@ -119,7 +119,7 @@ if (-not (Test-Path -Path $inputFilePath)) {
 if ($scriptOutput.Count -gt 0) {
     Write-Host "`nMengekspor hasil ke CSV..." -ForegroundColor Yellow
     $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
-    Write-Host " ✅ Selesai! File: $outputFilePath" -ForegroundColor Green
+    Write-Host "Selesai! File: $outputFilePath" -ForegroundColor Green
 }
 
 # Logout otomatis jika diperlukan
