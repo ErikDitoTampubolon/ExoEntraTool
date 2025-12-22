@@ -54,7 +54,7 @@ try {
     Connect-Entra -scope 'User.Read.All', 'UserAuthenticationMethod.Read.All' -ErrorAction Stop
     Write-Host "Koneksi Entra Berhasil." -ForegroundColor Green
 } catch {
-    Write-Host "Peringatan: Gagal terkoneksi ke Entra. Beberapa fitur MFA mungkin tidak berfungsi." -ForegroundColor Yellow
+    Write-Host "Peringatan: Gagal terkoneksi ke Entra." -ForegroundColor Yellow
 }
 
 # 2.3 KONEKSI EXCHANGE ONLINE
@@ -132,22 +132,28 @@ while ($mainRunning) {
             while ($subRunning) {
                 Show-Header
                 Write-Host "Sub-Menu: Microsoft Entra" -ForegroundColor Yellow
-                Write-Host "  1. Export All User MFA Status"
-		Write-Host "  2. Export All Device"
-		Write-Host "  3. Export All Application"
-		Write-Host "  4. Export All Deleted User"
-		Write-Host "  5. Export Duplicate Device"
+                Write-Host "  1. Enable or Disable MFA User by .csv"
+		Write-Host "  2. Export All User MFA Status"
+		Write-Host "  3. Export All Device"
+		Write-Host "  4. Export All User Owned Device"
+		Write-Host "  5. Export All Application"
+		Write-Host "  6. Export All Deleted User"
+		Write-Host "  7. Export All Inactive User (30 days)"
+		Write-Host "  8. Export Duplicate Device"
                 Write-Host ""
                 Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
                 Write-Host "=============================================" -ForegroundColor Cyan
                 
                 $subChoice = Read-Host "Pilih nomor menu"
                 if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
-                elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\export-alluser-mfa.ps1"); Pause }
-		elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\export-alldevice.ps1"); Pause }
-		elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-allapplication.ps1"); Pause }
-		elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-alldeleted-user.ps1"); Pause }
-		elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-list-alldevice.ps1"); Pause }
+		elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\enable-or-disable-mfa-user-by-csv-final.ps1"); Pause }
+                elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\export-alluser-mfa.ps1"); Pause }
+		elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-alldevice.ps1"); Pause }
+		elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-alluser-owned-device.ps1"); Pause }
+		elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-allapplication.ps1"); Pause }
+		elseif ($subChoice -eq "6") { & (Join-Path $scriptDir "script\export-alldeleted-user.ps1"); Pause }
+		elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\export-alluser-inactive-30days.ps1"); Pause }
+		elseif ($subChoice -eq "8") { & (Join-Path $scriptDir "script\export-list-alldevice.ps1"); Pause }
             }
         }
         "10" {
