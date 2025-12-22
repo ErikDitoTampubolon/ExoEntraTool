@@ -1,0 +1,165 @@
+# =========================================================================
+# AUTHOR  : Erik Dito Tampubolon - TelkomSigma
+# VERSION : 3.0 (Anti-Conflict Connection Sequence)
+# DESKRIPSI: Skrip Utama dengan urutan koneksi prioritas untuk mencegah error DLL.
+# =========================================================================
+
+$scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
+if ([string]::IsNullOrWhiteSpace($scriptDir)) { $scriptDir = "." }
+
+# --- 1. Memeriksa Lingkungan PowerShell ---
+Set-ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction SilentlyContinue
+
+function Check-Module {
+    param($ModuleName)
+    Write-Host "Memeriksa Modul '$ModuleName'..." -ForegroundColor Cyan
+    if (Get-Module -Name $ModuleName -ListAvailable) {
+        Write-Host "Terinstal." -ForegroundColor Green
+    } else {
+        Write-Host "Belum ada. Menginstal..." -ForegroundColor Yellow
+        Install-Module $ModuleName -Force -AllowClobber -Scope CurrentUser -ErrorAction SilentlyContinue
+    }
+}
+
+Write-Host "--- 1. Prasyarat Modul ---" -ForegroundColor Blue
+Check-Module -ModuleName "PowerShellGet"
+Check-Module -ModuleName "ExchangeOnlineManagement"
+Check-Module -ModuleName "Microsoft.Graph"
+Check-Module -ModuleName "Microsoft.Entra"
+Check-Module -ModuleName "Microsoft.Entra.Beta"
+
+# --- 2. Membangun Koneksi Multi-Service (Urutan Prioritas) ---
+$requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
+Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
+
+if (Get-MgContext -ErrorAction SilentlyContinue) {
+    Write-Host "Sesi Graph yang ada akan diputus untuk koneksi ulang dengan scopes baru." -ForegroundColor DarkYellow
+    Disconnect-MgGraph
+}
+
+Write-Host "Anda akan diminta untuk login. Pastikan Anda menyetujui scopes berikut:" -ForegroundColor Cyan
+Write-Host $requiredScopes -ForegroundColor Yellow
+
+try {
+    Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
+    Write-Host "Koneksi ke Microsoft Graph berhasil!" -ForegroundColor Green
+} catch {
+    Write-Error "Gagal terhubung ke Microsoft Graph. Pastikan Anda memiliki kredensial dan hak akses yang benar."
+    exit 1
+}
+
+# 2.2 KONEKSI ENTRA (SETELAH GRAPH BERHASIL)
+Write-Host "Menghubungkan ke Microsoft Entra..." -ForegroundColor Yellow
+try {
+    Connect-Entra -scope 'User.Read.All', 'UserAuthenticationMethod.Read.All' -ErrorAction Stop
+    Write-Host "Koneksi Entra Berhasil." -ForegroundColor Green
+} catch {
+    Write-Host "Peringatan: Gagal terkoneksi ke Entra. Beberapa fitur MFA mungkin tidak berfungsi." -ForegroundColor Yellow
+}
+
+# 2.3 KONEKSI EXCHANGE ONLINE
+if (-not (Get-PSSession | Where-Object {$_.ConfigurationName -eq "Microsoft.Exchange"})) {
+    Write-Host "Menghubungkan ke Exchange Online..." -ForegroundColor Yellow
+    Connect-ExchangeOnline -ShowProgress $false -ErrorAction SilentlyContinue
+}
+
+Write-Host "`nSemua layanan terhubung. Memuat antarmuka..." -ForegroundColor Green
+Start-Sleep -Seconds 1
+
+## -----------------------------------------------------------------------
+## FUNGSI HEADER
+## -----------------------------------------------------------------------
+function Show-Header {
+    Clear-Host
+    Write-Host "=============================================" -ForegroundColor Cyan
+    Write-Host "Author   : Erik Dito Tampubolon - TelkomSigma" -ForegroundColor White
+    Write-Host "Version  : 3.0 (Anti-Conflict Connection)" -ForegroundColor White
+    Write-Host "=============================================" -ForegroundColor Cyan
+    Write-Host "Location : ${scriptDir}" -ForegroundColor Gray
+    Write-Host "Time     : $(Get-Date -Format 'dd-MM-yyyy HH:mm:ss')" -ForegroundColor Gray  
+    Write-Host "---------------------------------------------" -ForegroundColor Cyan
+}
+
+## -----------------------------------------------------------------------
+## LOGIKA EKSEKUSI LOOP
+## -----------------------------------------------------------------------
+$mainRunning = $true
+while ($mainRunning) {
+    Show-Header
+    Write-Host "Menu Utama:" -ForegroundColor Yellow
+    Write-Host "  1. Microsoft Exchange Online"
+    Write-Host "  2. Microsoft Entra"
+    Write-Host ""
+    Write-Host "  10. Keluar & Putus Koneksi" -ForegroundColor Red
+    Write-Host "=============================================" -ForegroundColor Cyan
+    
+    $mainChoice = Read-Host "Pilih nomor menu"
+
+    switch ($mainChoice) {
+        "1" { 
+            $subRunning = $true
+            while ($subRunning) {
+                Show-Header
+                Write-Host "Sub-Menu: Microsoft Exchange Online" -ForegroundColor Yellow
+                Write-Host "  1. Assign or Remove License User by .csv"
+                Write-Host "  2. Export License Availability"
+		Write-Host "  3. Export All Mailbox"
+		Write-Host "  4. Export All Active User"
+		Write-Host "  5. Export All Active User (UPN and Contact)"
+                Write-Host "  6. Export User Last Password Changes by .csv"
+                Write-Host "  7. Export Active User (UPN and Contact) by .csv"
+                Write-Host "  8. Export User OneDrive Storage by .csv"
+                Write-Host "  9. Export User Last Logon by .csv"
+                Write-Host ""
+                Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
+                Write-Host "=============================================" -ForegroundColor Cyan
+                
+                $subChoice = Read-Host "Pilih nomor menu"
+                if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
+                elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\assign-or-remove-license-user-by-csv-final.ps1"); Pause }
+                elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\check-license-name-and-quota-final.ps1"); Pause }
+		elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-mailbox-final.ps1"); Pause }
+		elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-active-users-final.ps1"); Pause }
+		elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-alluser-userprincipalname-contact-final.ps1"); Pause }
+                elseif ($subChoice -eq "6") { & (Join-Path $scriptDir "script\check-lastpasswordchange-user-by-csv-final.ps1"); Pause }
+                elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\export-userprincipalname-contact-by-csv-final.ps1"); Pause }
+                elseif ($subChoice -eq "8") { & (Join-Path $scriptDir "script\check-storage-user-by-csv-final.ps1"); Pause }
+                elseif ($subChoice -eq "9") { & (Join-Path $scriptDir "script\check-lastlogon-user-by-csv-final.ps1"); Pause }
+            }
+        }
+        "2" { 
+            $subRunning = $true
+            while ($subRunning) {
+                Show-Header
+                Write-Host "Sub-Menu: Microsoft Entra" -ForegroundColor Yellow
+                Write-Host "  1. Export All User MFA Status"
+		Write-Host "  2. Export All Device"
+		Write-Host "  3. Export All Application"
+		Write-Host "  4. Export All Deleted User"
+		Write-Host "  5. Export Duplicate Device"
+                Write-Host ""
+                Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
+                Write-Host "=============================================" -ForegroundColor Cyan
+                
+                $subChoice = Read-Host "Pilih nomor menu"
+                if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
+                elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\export-alluser-mfa.ps1"); Pause }
+		elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\export-alldevice.ps1"); Pause }
+		elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-allapplication.ps1"); Pause }
+		elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-alldeleted-user.ps1"); Pause }
+		elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-list-alldevice.ps1"); Pause }
+            }
+        }
+        "10" {
+            Write-Host "`nClosing sessions..." -ForegroundColor Cyan
+            Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
+            Disconnect-Entra -ErrorAction SilentlyContinue
+            Disconnect-MgGraph -ErrorAction SilentlyContinue
+            $mainRunning = $false
+        }
+        default { 
+            Write-Host "Pilihan tidak valid!" -ForegroundColor Red
+            Start-Sleep -Seconds 1 
+        }
+    }
+}

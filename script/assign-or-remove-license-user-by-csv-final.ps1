@@ -11,24 +11,24 @@ $inputFilePath = Join-Path -Path $scriptDir -ChildPath $inputFileName
 $defaultUsageLocation = 'ID'
 $operationType = "" 
 
-## -----------------------------------------------------------------------
-## 2. KONEKSI KE MICROSOFT GRAPH (SILENT MODE)
-## -----------------------------------------------------------------------
-$requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
-Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
+# ## -----------------------------------------------------------------------
+# ## 2. KONEKSI KE MICROSOFT GRAPH (SILENT MODE)
+# ## -----------------------------------------------------------------------
+# $requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
+# Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
 
-if (Get-MgContext -ErrorAction SilentlyContinue) {
-    Write-Host "Sesi Microsoft Graph aktif." -ForegroundColor Green
-} else {
-    Write-Host "Menghubungkan ke Microsoft Graph..." -ForegroundColor Cyan
-    try {
-        Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
-        Write-Host "Koneksi Berhasil." -ForegroundColor Green
-    } catch {
-        Write-Error "Gagal terhubung ke Microsoft Graph."
-        return
-    }
-}
+# if (Get-MgContext -ErrorAction SilentlyContinue) {
+#     Write-Host "Sesi Microsoft Graph aktif." -ForegroundColor Green
+# } else {
+#     Write-Host "Menghubungkan ke Microsoft Graph..." -ForegroundColor Cyan
+#     try {
+#         Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
+#         Write-Host "Koneksi Berhasil." -ForegroundColor Green
+#     } catch {
+#         Write-Error "Gagal terhubung ke Microsoft Graph."
+#         return
+#     }
+# }
 
 ## -----------------------------------------------------------------------
 ## 3. PEMILIHAN OPERASI DAN LISENSI 

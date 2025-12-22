@@ -1,11 +1,12 @@
 # =========================================================================
-# FRAMEWORK SCRIPT POWERSHELL DENGAN EKSPOR OTOMATIS (V2.8)
-# Deskripsi: Fix ParserError Variable Reference & Support No Header CSV.
+# AUTHOR: Erik Dito Tampubolon - TelkomSigma
+# VERSION: 2.9 (UI Enhanced Output)
+# Deskripsi: Fix ParserError & Support No Header CSV dengan Output Progres Hijau.
 # =========================================================================
 
 # Variabel Global dan Output
 $scriptName = "UserContactReport_Final_Fixed" 
-$scriptOutput = @() 
+$scriptOutput = [System.Collections.ArrayList]::new() 
 $global:moduleStep = 1
 
 # Konfigurasi File Input
@@ -57,7 +58,8 @@ foreach ($row in $csvData) {
     
     if ([string]::IsNullOrWhiteSpace($targetUser)) { continue }
 
-    Write-Progress -Activity "Fetching User Info" -Status "Processing: $targetUser" -PercentComplete ([int](($i / $totalData) * 100))
+    # FORMAT OUTPUT SESUAI PERMINTAAN: -> [i/total] Memproses: email@domain.com
+    Write-Host "-> [$($i)/$($totalData)] Memproses: $($targetUser)" -ForegroundColor White
 
     try {
         $userObj = Get-MgUser -UserId $targetUser -Property "UserPrincipalName","DisplayName","BusinessPhones","MobilePhone" -ErrorAction Stop
@@ -68,23 +70,20 @@ foreach ($row in $csvData) {
         
         $contactInfo = if ($phones.Count -gt 0) { $phones -join " | " } else { "-" }
 
-        $scriptOutput += [PSCustomObject]@{
+        [void]$scriptOutput.Add([PSCustomObject]@{
             InputUser   = $targetUser
             DisplayName = $userObj.DisplayName
             UPN         = $userObj.UserPrincipalName
             Contact     = $contactInfo
-        }
+        })
     }
     catch {
-        # FIX: Menggunakan ${i} untuk menghindari ParserError "InvalidVariableReference"
-        Write-Host " Baris ${i}: ${targetUser} tidak ditemukan di sistem." -ForegroundColor DarkYellow
-        
-        $scriptOutput += [PSCustomObject]@{
+        [void]$scriptOutput.Add([PSCustomObject]@{
             InputUser   = $targetUser
             DisplayName = "NOT FOUND"
             UPN         = "-"
             Contact     = "-"
-        }
+        })
     }
 }
 
@@ -103,6 +102,5 @@ if ($scriptOutput.Count -gt 0) {
     }
 } 
 
-if (Get-MgContext -ErrorAction SilentlyContinue) { Disconnect-MgGraph -ErrorAction SilentlyContinue }
-
+# Disconnect otomatis tetap dijalankan melalui skrip utama (main app)
 Write-Host "`nSkrip Selesai." -ForegroundColor Yellow

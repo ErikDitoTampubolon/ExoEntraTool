@@ -36,30 +36,6 @@ $scriptDir = if ($PSScriptRoot) {$PSScriptRoot} else {(Get-Location).Path}
 $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 
 ## -----------------------------------------------------------------------
-## 2. KONEKSI KE MICROSOFT GRAPH
-## -----------------------------------------------------------------------
-
-$requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
-Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
-
-if (Get-MgContext -ErrorAction SilentlyContinue) {
-    Write-Host "Sesi Graph yang ada akan diputus untuk koneksi ulang dengan scopes baru." -ForegroundColor DarkYellow
-    Disconnect-MgGraph
-}
-
-Write-Host "Anda akan diminta untuk login. Pastikan Anda menyetujui scopes berikut:" -ForegroundColor Cyan
-Write-Host $requiredScopes -ForegroundColor Yellow
-
-try {
-    Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
-    Write-Host "Koneksi ke Microsoft Graph berhasil!" -ForegroundColor Green
-} catch {
-    Write-Error "Gagal terhubung ke Microsoft Graph. Pastikan Anda memiliki kredensial dan hak akses yang benar."
-    exit 1
-}
-
-
-## -----------------------------------------------------------------------
 ## 3. LOGIKA UTAMA SCRIPT ANDA DI SINI
 ## -----------------------------------------------------------------------
 
