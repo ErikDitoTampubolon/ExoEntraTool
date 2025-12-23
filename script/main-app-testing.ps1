@@ -88,7 +88,7 @@ while ($mainRunning) {
     Show-Header
     Write-Host "Menu Utama:" -ForegroundColor Yellow
     Write-Host "  1. Microsoft Exchange Online"
-    Write-Host "  2. Microsoft Entra"
+    Write-Host "  2. Microsoft Entra (Soon)"
     Write-Host ""
     Write-Host "  10. Keluar & Putus Koneksi" -ForegroundColor Red
     Write-Host "=============================================" -ForegroundColor Cyan
@@ -103,13 +103,13 @@ while ($mainRunning) {
                 Write-Host "Sub-Menu: Microsoft Exchange Online" -ForegroundColor Yellow
                 Write-Host "  1. Assign or Remove License User by .csv"
                 Write-Host "  2. Export License Availability"
-		Write-Host "  3. Export All Mailbox"
-		Write-Host "  4. Export All Active User"
-		Write-Host "  5. Export All Active User (UPN and Contact)"
-                Write-Host "  6. Export User Last Password Changes by .csv"
-                Write-Host "  7. Export Active User (UPN and Contact) by .csv"
-                Write-Host "  8. Export User OneDrive Storage by .csv"
-                Write-Host "  9. Export User Last Logon by .csv"
+                # Write-Host "  3. Export All Mailbox"
+                # Write-Host "  4. Export All Active User"
+                # Write-Host "  5. Export All Active User (UPN and Contact)"
+                # Write-Host "  6. Export User Last Password Changes by .csv"
+                # Write-Host "  7. Export Active User (UPN and Contact) by .csv"
+                # Write-Host "  8. Export User OneDrive Storage by .csv"
+                # Write-Host "  9. Export User Last Logon by .csv"
                 Write-Host ""
                 Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
                 Write-Host "=============================================" -ForegroundColor Cyan
@@ -118,9 +118,9 @@ while ($mainRunning) {
                 if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
                 elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\assign-or-remove-license-user-by-csv-final.ps1"); Pause }
                 elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\check-license-name-and-quota-final.ps1"); Pause }
-		elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-mailbox-final.ps1"); Pause }
-		elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-active-users-final.ps1"); Pause }
-		elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-alluser-userprincipalname-contact-final.ps1"); Pause }
+                elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-mailbox-final.ps1"); Pause }
+                elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-active-users-final.ps1"); Pause }
+                elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-alluser-userprincipalname-contact-final.ps1"); Pause }
                 elseif ($subChoice -eq "6") { & (Join-Path $scriptDir "script\check-lastpasswordchange-user-by-csv-final.ps1"); Pause }
                 elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\export-userprincipalname-contact-by-csv-final.ps1"); Pause }
                 elseif ($subChoice -eq "8") { & (Join-Path $scriptDir "script\check-storage-user-by-csv-final.ps1"); Pause }
@@ -131,29 +131,29 @@ while ($mainRunning) {
             $subRunning = $true
             while ($subRunning) {
                 Show-Header
-                Write-Host "Sub-Menu: Microsoft Entra" -ForegroundColor Yellow
-                Write-Host "  1. Enable or Disable MFA User by .csv"
-		Write-Host "  2. Export All User MFA Status"
-		Write-Host "  3. Export All Device"
-		Write-Host "  4. Export All User Owned Device"
-		Write-Host "  5. Export All Application"
-		Write-Host "  6. Export All Deleted User"
-		Write-Host "  7. Export All Inactive User (30 days)"
-		Write-Host "  8. Export Duplicate Device"
+                Write-Host "Sub-Menu: Microsoft Entra (Soon)" -ForegroundColor Yellow
+                # Write-Host "  1. Enable or Disable MFA User by .csv"
+                # Write-Host "  2. Export All User MFA Status"
+                # Write-Host "  3. Export All Device"
+                # Write-Host "  4. Export All User Owned Device"
+                # Write-Host "  5. Export All Application"
+                # Write-Host "  6. Export All Deleted User"
+                # Write-Host "  7. Export All Inactive User (30 days)"
+                # Write-Host "  8. Export Duplicate Device"
                 Write-Host ""
                 Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
                 Write-Host "=============================================" -ForegroundColor Cyan
                 
                 $subChoice = Read-Host "Pilih nomor menu"
                 if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
-		elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\enable-or-disable-mfa-user-by-csv-final.ps1"); Pause }
-                elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\export-alluser-mfa.ps1"); Pause }
-		elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-alldevice.ps1"); Pause }
-		elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-alluser-owned-device.ps1"); Pause }
-		elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-allapplication.ps1"); Pause }
-		elseif ($subChoice -eq "6") { & (Join-Path $scriptDir "script\export-alldeleted-user.ps1"); Pause }
-		elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\export-alluser-inactive-30days.ps1"); Pause }
-		elseif ($subChoice -eq "8") { & (Join-Path $scriptDir "script\export-list-alldevice.ps1"); Pause }
+		        elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\enable-or-disable-mfa-user-by-csv-final.ps1"); Pause }
+                elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\export-alluser-mfa-final.ps1"); Pause }
+                elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-alldevice-final.ps1"); Pause }
+                elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-alluser-owned-device-final.ps1"); Pause }
+                elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-allapplication-final.ps1"); Pause }
+                elseif ($subChoice -eq "6") { & (Join-Path $scriptDir "script\export-alldeleted-user-final.ps1"); Pause }
+                elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\export-alluser-inactive-30days-final.ps1"); Pause }
+                elseif ($subChoice -eq "8") { & (Join-Path $scriptDir "script\export-list-alldevice-final.ps1"); Pause }
             }
         }
         "10" {

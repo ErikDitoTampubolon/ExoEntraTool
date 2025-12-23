@@ -1,6 +1,5 @@
 # =========================================================================
 # FRAMEWORK SCRIPT POWERSHELL DENGAN EKSPOR OTOMATIS (V2.0)
-# Nama Skrip: Export-AllEntraDevices
 # Deskripsi: Mengambil semua data perangkat dari Microsoft Entra ID.
 # =========================================================================
 
