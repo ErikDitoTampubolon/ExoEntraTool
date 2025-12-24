@@ -1,6 +1,6 @@
 # =========================================================================
 # AUTHOR  : Erik Dito Tampubolon - TelkomSigma
-# VERSION : 3.0 (Anti-Conflict Connection Sequence)
+# VERSION : 1.0
 # DESKRIPSI: Skrip Utama dengan urutan koneksi prioritas untuk mencegah error DLL.
 # =========================================================================
 
@@ -73,7 +73,7 @@ function Show-Header {
     Clear-Host
     Write-Host "=============================================" -ForegroundColor Cyan
     Write-Host "Author   : Erik Dito Tampubolon - TelkomSigma" -ForegroundColor White
-    Write-Host "Version  : 3.0 (Anti-Conflict Connection)" -ForegroundColor White
+    Write-Host "Version  : 1.0" -ForegroundColor White
     Write-Host "=============================================" -ForegroundColor Cyan
     Write-Host "Location : ${scriptDir}" -ForegroundColor Gray
     Write-Host "Time     : $(Get-Date -Format 'dd-MM-yyyy HH:mm:ss')" -ForegroundColor Gray  
@@ -102,14 +102,14 @@ while ($mainRunning) {
                 Show-Header
                 Write-Host "Sub-Menu: Microsoft Exchange Online" -ForegroundColor Yellow
                 Write-Host "  1. Assign or Remove License User by .csv"
-                Write-Host "  2. Export License Availability"
-                # Write-Host "  3. Export All Mailbox"
-                # Write-Host "  4. Export All Active User"
-                # Write-Host "  5. Export All Active User (UPN and Contact)"
-                # Write-Host "  6. Export User Last Password Changes by .csv"
-                # Write-Host "  7. Export Active User (UPN and Contact) by .csv"
-                # Write-Host "  8. Export User OneDrive Storage by .csv"
-                # Write-Host "  9. Export User Last Logon by .csv"
+                Write-Host "  2. Export List License Availability"
+                # Write-Host "  3. Export List All Mailbox"
+                # Write-Host "  4. Export List All Active User"
+                # Write-Host "  5. Export List All Active User (UPN and Contact)"
+                # Write-Host "  6. Export List Active User Last Password Changes by .csv"
+                # Write-Host "  7. Export List Active User (UPN and Contact) by .csv"
+                # Write-Host "  8. Export List Active User OneDrive Usage by .csv"
+                # Write-Host "  9. Export List Active User Last Logon by .csv"
                 Write-Host ""
                 Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
                 Write-Host "=============================================" -ForegroundColor Cyan
@@ -133,13 +133,19 @@ while ($mainRunning) {
                 Show-Header
                 Write-Host "Sub-Menu: Microsoft Entra (Soon)" -ForegroundColor Yellow
                 # Write-Host "  1. Enable or Disable MFA User by .csv"
-                # Write-Host "  2. Export All User MFA Status"
-                # Write-Host "  3. Export All Device"
-                # Write-Host "  4. Export All User Owned Device"
-                # Write-Host "  5. Export All Application"
-                # Write-Host "  6. Export All Deleted User"
-                # Write-Host "  7. Export All Inactive User (30 days)"
-                # Write-Host "  8. Export Duplicate Device"
+                # Write-Host "  2. Force Change Password User by .csv"
+                # Write-Host "  3. Export List All User MFA Status"
+                # Write-Host "  4. Export List All Device"
+                # Write-Host "  5. Export List All User Owned Device"
+                # Write-Host "  6. Export List All Application"
+                # Write-Host "  7. Export List All Deleted User"
+                # Write-Host "  8. Export List All Inactive User (30 days)"
+                # Write-Host "  9. Export List Duplicate Device"
+                # Write-Host "  10. Export List Conditional Access Policy"
+                # Write-Host "  11. Export List User Auth Method"
+                # Write-Host "  12. Export List Permission Grant Policy"
+                # Write-Host "  13. Export List Entra Auth Policy"
+                # Write-Host "  14. Export List Entra Identity Provider"
                 Write-Host ""
                 Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
                 Write-Host "=============================================" -ForegroundColor Cyan
@@ -147,13 +153,19 @@ while ($mainRunning) {
                 $subChoice = Read-Host "Pilih nomor menu"
                 if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
 		        elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\enable-or-disable-mfa-user-by-csv-final.ps1"); Pause }
-                elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\export-alluser-mfa-final.ps1"); Pause }
-                elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-alldevice-final.ps1"); Pause }
-                elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-alluser-owned-device-final.ps1"); Pause }
-                elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-allapplication-final.ps1"); Pause }
-                elseif ($subChoice -eq "6") { & (Join-Path $scriptDir "script\export-alldeleted-user-final.ps1"); Pause }
-                elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\export-alluser-inactive-30days-final.ps1"); Pause }
-                elseif ($subChoice -eq "8") { & (Join-Path $scriptDir "script\export-list-alldevice-final.ps1"); Pause }
+		        elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\force-password-change-alluser-by-csv-final.ps1"); Pause }
+                elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\export-alluser-mfa-final.ps1"); Pause }
+                elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\export-alldevice-final.ps1"); Pause }
+                elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\export-alluser-owned-device-final.ps1"); Pause }
+                elseif ($subChoice -eq "6") { & (Join-Path $scriptDir "script\export-allapplication-final.ps1"); Pause }
+                elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\export-alldeleted-user-final.ps1"); Pause }
+                elseif ($subChoice -eq "8") { & (Join-Path $scriptDir "script\export-alluser-inactive-30days-final.ps1"); Pause }
+                elseif ($subChoice -eq "9") { & (Join-Path $scriptDir "script\export-list-alldevice-final.ps1"); Pause }
+                elseif ($subChoice -eq "10") { & (Join-Path $scriptDir "script\check-conditional-access-policy-final.ps1"); Pause }
+                elseif ($subChoice -eq "11") { & (Join-Path $scriptDir "script\check-user-auth-method-final.ps1"); Pause }
+                elseif ($subChoice -eq "12") { & (Join-Path $scriptDir "script\check-permission-grant-policy-final.ps1"); Pause }
+                elseif ($subChoice -eq "13") { & (Join-Path $scriptDir "script\check-entra-auth-policy-final.ps1"); Pause }
+                elseif ($subChoice -eq "14") { & (Join-Path $scriptDir "script\check-entra-identity-provider-final.ps1"); Pause }
             }
         }
         "10" {

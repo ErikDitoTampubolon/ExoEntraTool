@@ -1,4 +1,0 @@
-﻿"Id";"Name";"Type";"ClientId"
-"AADSignup-OAUTH";"Azure Active Directory Sign up";"AADSignup";
-"EmailOtpSignup-OAUTH";"Email One Time Passcode";"EmailOTP";
-"MSASignup-OAUTH";"Microsoft Account";"MicrosoftAccount";
