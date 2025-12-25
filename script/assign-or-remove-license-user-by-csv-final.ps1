@@ -1,5 +1,5 @@
 # =========================================================================
-# LISENSI MICROSOFT GRAPH ASSIGNMENT/REMOVAL SCRIPT V19.3 (Final Stability)
+# LISENSI MICROSOFT GRAPH ASSIGNMENT/REMOVAL SCRIPT V19.4 (Fixed & Clean)
 # AUTHOR: Erik Dito Tampubolon - TelkomSigma
 # =========================================================================
 
@@ -11,30 +11,33 @@ $inputFilePath = Join-Path -Path $scriptDir -ChildPath $inputFileName
 $defaultUsageLocation = 'ID'
 $operationType = "" 
 
-# ## -----------------------------------------------------------------------
-# ## 2. KONEKSI KE MICROSOFT GRAPH (SILENT MODE)
-# ## -----------------------------------------------------------------------
-# $requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
-# Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
+## -----------------------------------------------------------------------
+## 2. KONEKSI KE MICROSOFT GRAPH
+## -----------------------------------------------------------------------
+$requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
+Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
 
-# if (Get-MgContext -ErrorAction SilentlyContinue) {
-#     Write-Host "Sesi Microsoft Graph aktif." -ForegroundColor Green
-# } else {
-#     Write-Host "Menghubungkan ke Microsoft Graph..." -ForegroundColor Cyan
-#     try {
-#         Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
-#         Write-Host "Koneksi Berhasil." -ForegroundColor Green
-#     } catch {
-#         Write-Error "Gagal terhubung ke Microsoft Graph."
-#         return
-#     }
-# }
+if (Get-MgContext -ErrorAction SilentlyContinue) {
+    Write-Host "Sesi Microsoft Graph aktif." -ForegroundColor Green
+} else {
+    Write-Host "Menghubungkan ke Microsoft Graph..." -ForegroundColor Cyan
+    try {
+        # Menggunakan -ContextScope Process untuk stabilitas sesi di dalam EXE
+        Connect-MgGraph -Scopes $requiredScopes -ContextScope Process -ErrorAction Stop | Out-Null
+        Write-Host "Koneksi Berhasil." -ForegroundColor Green
+    } catch {
+        Write-Error "Gagal terhubung ke Microsoft Graph."
+        return
+    }
+}
 
 ## -----------------------------------------------------------------------
 ## 3. PEMILIHAN OPERASI DAN LISENSI 
 ## -----------------------------------------------------------------------
 Write-Host "`n--- 3. Pemilihan Operasi ---" -ForegroundColor Blue
-$operationChoice = Read-Host "Pilih operasi: (1) Assign License | (2) Remove License"
+Write-Host "1. Assign License"
+Write-Host "2. Remove License"
+$operationChoice = Read-Host "Pilih nomor menu"
 
 switch ($operationChoice) {
     "1" { $operationType = "ASSIGN" }
@@ -64,7 +67,7 @@ try {
 }
 
 ## -----------------------------------------------------------------------
-## 4. PROSES LOGIKA UTAMA (CLEAN OUTPUT & FIXED INTERPOLATION)
+## 4. PROSES LOGIKA UTAMA
 ## -----------------------------------------------------------------------
 $allResults = @()
 $timestamp = Get-Date -Format "yyyyMMdd_HHmm"
@@ -74,7 +77,7 @@ if (-not (Test-Path -Path $inputFilePath)) {
     return
 }
 
-# Import CSV tanpa header
+# Import CSV tanpa header sesuai instruksi sebelumnya
 $users = Import-Csv -Path $inputFilePath -Header "UserPrincipalName" -ErrorAction SilentlyContinue
 $totalUsers = $users.Count
 $userCount = 0 
@@ -86,36 +89,32 @@ foreach ($entry in $users) {
     $userUpn = if ($entry.UserPrincipalName) { $entry.UserPrincipalName.Trim() } else { $null }
     if ([string]::IsNullOrWhiteSpace($userUpn)) { continue }
 
-    # FIX: Menggunakan ${} untuk menghindari error 'Variable reference is not valid'
-    Write-Progress -Activity "${operationType} License: ${skuPartNumberTarget}" `
-                   -Status "User ${userCount} of ${totalUsers}: ${userUpn}" `
-                   -PercentComplete ([int](($userCount / $totalUsers) * 100))
-    
-    Write-Host "-> [${userCount}/${totalUsers}] Memproses: ${userUpn}" -ForegroundColor White
+    # Output tampilan baris tunggal (Putih)
+    Write-Host "-> [${userCount}/${totalUsers}] Memproses: ${userUpn} . . ." -ForegroundColor White
 
     try {
-        # Ambil User dan simpan ke variabel (agar tidak tumpah ke layar)
+        # Ambil User Property
         $user = Get-MgUser -UserId $userUpn -Property 'Id', 'DisplayName', 'UsageLocation' -ErrorAction Stop
         
-        # Penanganan UsageLocation
+        # Atur UsageLocation jika ASSIGN dan belum ada (Syarat lisensi M365)
         if ($operationType -eq "ASSIGN" -and -not $user.UsageLocation) {
             $null = Update-MgUser -UserId $user.Id -UsageLocation $defaultUsageLocation -ErrorAction Stop
             $user.UsageLocation = $defaultUsageLocation
         }
 
-        # Cek Lisensi
+        # Cek apakah user sudah punya lisensi tersebut
         $userLicense = Get-MgUserLicenseDetail -UserId $user.Id | Where-Object { $_.SkuId -eq $selectedLicense.SkuId }
 
         if ($operationType -eq "ASSIGN") {
             if ($userLicense) {
-                $status = "ALREADY_ASSIGNED"; $reason = "Sudah memiliki lisensi."
+                $status = "ALREADY_ASSIGNED"; $reason = "Sudah memiliki lisensi ini."
             } else {
                 $null = Set-MgUserLicense -UserId $user.Id -AddLicenses @(@{ SkuId = $selectedLicense.SkuId }) -RemoveLicenses @() -ErrorAction Stop
                 $status = "SUCCESS"; $reason = "Lisensi berhasil diberikan."
             }
         } else {
             if (-not $userLicense) {
-                $status = "ALREADY_REMOVED"; $reason = "User tidak memiliki lisensi ini."
+                $status = "ALREADY_REMOVED"; $reason = "User memang tidak memiliki lisensi ini."
             } else {
                 $null = Set-MgUserLicense -UserId $user.Id -RemoveLicenses @($selectedLicense.SkuId) -AddLicenses @() -ErrorAction Stop
                 $status = "SUCCESS_REMOVED"; $reason = "Lisensi berhasil dihapus."
@@ -130,7 +129,7 @@ foreach ($entry in $users) {
         }
     }
     catch {
-        Write-Host "Gagal: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "   Gagal: $($_.Exception.Message)" -ForegroundColor Red
         $allResults += [PSCustomObject]@{
             UserPrincipalName = $userUpn
             DisplayName       = "Error/Not Found"
@@ -139,19 +138,19 @@ foreach ($entry in $users) {
         }
     }
 }
-Write-Progress -Activity "Selesai" -Completed
 
 ## -----------------------------------------------------------------------
 ## 5. EKSPOR HASIL
 ## -----------------------------------------------------------------------
 if ($allResults.Count -gt 0) {
     $outputFileName = "${operationType}_License_Results_${timestamp}.csv"
+    # PERBAIKAN TYPO: ChildPath (sebelumnya ChsildPatsh)
     $resultsFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
+    
     $allResults | Export-Csv -Path $resultsFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
     
     Write-Host "`nSemua proses selesai!" -ForegroundColor Green
     Write-Host "Laporan tersimpan di: ${resultsFilePath}" -ForegroundColor Cyan
 }
 
-# Menjaga sesi tetap terbuka agar bisa kembali ke menu utama
-# Disconnect-MgGraph | Out-Null
+# Sesi tetap terbuka untuk kembali ke menu utama EXE
