@@ -1,7 +1,7 @@
 # =========================================================================
-# AUTHOR  : Erik Dito Tampubolon - TelkomSigma
-# VERSION : 1.0
-# DESKRIPSI: Skrip Utama dengan urutan koneksi prioritas untuk mencegah error DLL.
+# AUTHOR   : Erik Dito Tampubolon - TelkomSigma
+# VERSION  : 1.1
+# DESKRIPSI: Skrip Utama dengan ASCII Art Header "ExoEntraTool"
 # =========================================================================
 
 $scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
@@ -28,7 +28,7 @@ Check-Module -ModuleName "Microsoft.Graph"
 Check-Module -ModuleName "Microsoft.Entra"
 Check-Module -ModuleName "Microsoft.Entra.Beta"
 
-# --- 2. Membangun Koneksi Multi-Service (Urutan Prioritas) ---
+# --- 2. Membangun Koneksi Multi-Service ---
 $requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
 Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
 
@@ -44,11 +44,11 @@ try {
     Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
     Write-Host "Koneksi ke Microsoft Graph berhasil!" -ForegroundColor Green
 } catch {
-    Write-Error "Gagal terhubung ke Microsoft Graph. Pastikan Anda memiliki kredensial dan hak akses yang benar."
+    Write-Error "Gagal terhubung ke Microsoft Graph."
     exit 1
 }
 
-# 2.2 KONEKSI ENTRA (SETELAH GRAPH BERHASIL)
+# 2.2 KONEKSI ENTRA
 Write-Host "Menghubungkan ke Microsoft Entra..." -ForegroundColor Yellow
 try {
     Connect-Entra -scope 'User.Read.All', 'UserAuthenticationMethod.Read.All' -ErrorAction Stop
@@ -67,17 +67,28 @@ Write-Host "`nSemua layanan terhubung. Memuat antarmuka..." -ForegroundColor Gre
 Start-Sleep -Seconds 1
 
 ## -----------------------------------------------------------------------
-## FUNGSI HEADER
+## FUNGSI HEADER DENGAN ASCII ART
 ## -----------------------------------------------------------------------
 function Show-Header {
     Clear-Host
-    Write-Host "=============================================" -ForegroundColor Cyan
-    Write-Host "Author   : Erik Dito Tampubolon - TelkomSigma" -ForegroundColor White
-    Write-Host "Version  : 1.0" -ForegroundColor White
-    Write-Host "=============================================" -ForegroundColor Cyan
-    Write-Host "Location : ${scriptDir}" -ForegroundColor Gray
-    Write-Host "Time     : $(Get-Date -Format 'dd-MM-yyyy HH:mm:ss')" -ForegroundColor Gray  
-    Write-Host "---------------------------------------------" -ForegroundColor Cyan
+    $ascii = @'
+  _____              ______       _               _______           _ 
+ |  ___|            |  ____|     | |             |__   __|         | | 
+ | |__  __  _____   | |__   _ __ | |_ _ __ __ _     | | ___   ___  | |
+ |  __| \ \/ / _ \  |  __| | '_ \| __| '__/ _` |    | |/ _ \ / _ \ | |
+ | |___  >  < (_) | | |____| | | | |_| | | (_| |    | | (_) | (_) || |
+ \____/ /_/\_\___/  |______|_| |_|\__|_|  \__,_|    |_|\___/ \___/ |_|
+'@
+
+    Write-Host $ascii -ForegroundColor Cyan
+    Write-Host "======================================================================" -ForegroundColor DarkCyan
+    Write-Host " Author   : Erik Dito Tampubolon - TelkomSigma" -ForegroundColor White
+    Write-Host " Version  : 1.1 (ExoEntraTool Suite)" -ForegroundColor White
+    Write-Host "----------------------------------------------------------------------" -ForegroundColor DarkCyan
+    Write-Host " Location : ${scriptDir}" -ForegroundColor Gray
+    Write-Host " Time     : $(Get-Date -Format 'dd-MM-yyyy HH:mm:ss')" -ForegroundColor Gray  
+    Write-Host "======================================================================" -ForegroundColor DarkCyan
+    Write-Host ""
 }
 
 ## -----------------------------------------------------------------------
@@ -88,10 +99,10 @@ while ($mainRunning) {
     Show-Header
     Write-Host "Menu Utama:" -ForegroundColor Yellow
     Write-Host "  1. Microsoft Exchange Online"
-    Write-Host "  2. Microsoft Entra (Soon)"
+    Write-Host "  2. Microsoft Entra (Entra ID)"
     Write-Host ""
     Write-Host "  10. Keluar & Putus Koneksi" -ForegroundColor Red
-    Write-Host "=============================================" -ForegroundColor Cyan
+    Write-Host "======================================================================" -ForegroundColor DarkCyan
     
     $mainChoice = Read-Host "Pilih nomor menu"
 
@@ -103,16 +114,16 @@ while ($mainRunning) {
                 Write-Host "Sub-Menu: Microsoft Exchange Online" -ForegroundColor Yellow
                 Write-Host "  1. Assign or Remove License User by .csv"
                 Write-Host "  2. Export List License Availability"
-                # Write-Host "  3. Export List All Mailbox"
-                # Write-Host "  4. Export List All Active User"
-                # Write-Host "  5. Export List All Active User (UPN and Contact)"
-                # Write-Host "  6. Export List Active User Last Password Changes by .csv"
-                # Write-Host "  7. Export List Active User (UPN and Contact) by .csv"
-                # Write-Host "  8. Export List Active User OneDrive Usage by .csv"
-                # Write-Host "  9. Export List Active User Last Logon by .csv"
+                Write-Host "  3. Export List All Mailbox"
+                Write-Host "  4. Export List All Active User"
+                Write-Host "  5. Export List All Active User (UPN and Contact)"
+                Write-Host "  6. Export List Active User Last Password Changes by .csv"
+                Write-Host "  7. Export List Active User (UPN and Contact) by .csv"
+                Write-Host "  8. Export List Active User OneDrive Usage by .csv"
+                Write-Host "  9. Export List Active User Last Logon by .csv"
                 Write-Host ""
                 Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
-                Write-Host "=============================================" -ForegroundColor Cyan
+                Write-Host "---------------------------------------------" -ForegroundColor DarkCyan
                 
                 $subChoice = Read-Host "Pilih nomor menu"
                 if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
@@ -131,24 +142,24 @@ while ($mainRunning) {
             $subRunning = $true
             while ($subRunning) {
                 Show-Header
-                Write-Host "Sub-Menu: Microsoft Entra (Soon)" -ForegroundColor Yellow
-                # Write-Host "  1. Enable or Disable MFA User by .csv"
-                # Write-Host "  2. Force Change Password User by .csv"
-                # Write-Host "  3. Export List All User MFA Status"
-                # Write-Host "  4. Export List All Device"
-                # Write-Host "  5. Export List All User Owned Device"
-                # Write-Host "  6. Export List All Application"
-                # Write-Host "  7. Export List All Deleted User"
-                # Write-Host "  8. Export List All Inactive User (30 days)"
-                # Write-Host "  9. Export List Duplicate Device"
-                # Write-Host "  10. Export List Conditional Access Policy"
-                # Write-Host "  11. Export List User Auth Method"
-                # Write-Host "  12. Export List Permission Grant Policy"
-                # Write-Host "  13. Export List Entra Auth Policy"
-                # Write-Host "  14. Export List Entra Identity Provider"
+                Write-Host "Sub-Menu: Microsoft Entra (Entra ID)" -ForegroundColor Yellow
+                Write-Host "  1. Enable or Disable MFA User by .csv"
+                Write-Host "  2. Force Change Password User by .csv"
+                Write-Host "  3. Export List All User MFA Status"
+                Write-Host "  4. Export List All Device"
+                Write-Host "  5. Export List All User Owned Device"
+                Write-Host "  6. Export List All Application"
+                Write-Host "  7. Export List All Deleted User"
+                Write-Host "  8. Export List All Inactive User (30 days)"
+                Write-Host "  9. Export List Duplicate Device"
+                Write-Host "  10. Export List Conditional Access Policy"
+                Write-Host "  11. Export List User Auth Method"
+                Write-Host "  12. Export List Permission Grant Policy"
+                Write-Host "  13. Export List Entra Auth Policy"
+                Write-Host "  14. Export List Entra Identity Provider"
                 Write-Host ""
                 Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
-                Write-Host "=============================================" -ForegroundColor Cyan
+                Write-Host "---------------------------------------------" -ForegroundColor DarkCyan
                 
                 $subChoice = Read-Host "Pilih nomor menu"
                 if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
