@@ -38,53 +38,6 @@ if ($confirmation -ne "Y") {
 }
 
 ## -----------------------------------------------------------------------
-## 1. PRASYARAT DAN INSTALASI MODUL
-## -----------------------------------------------------------------------
-
-Write-Host "--- 1. Memeriksa dan Menyiapkan Lingkungan PowerShell ---" -ForegroundColor Blue
-
-# 1.1. Mengatur Execution Policy
-Write-Host "1.1. Mengatur Execution Policy ke RemoteSigned..." -ForegroundColor Cyan
-try {
-    Set-ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction Stop
-    Write-Host " Execution Policy berhasil diatur." -ForegroundColor Green
-} catch {
-    Write-Error "Gagal mengatur Execution Policy: $($_.Exception.Message)"
-    exit 1
-}
-
-# 1.2. Fungsi Pembantu untuk Cek dan Instal Modul
-function CheckAndInstallModule {
-    param([string]$ModuleName)
-    Write-Host "1.$(++$global:moduleStep). Memeriksa Modul '$ModuleName'..." -ForegroundColor Cyan
-    if (Get-Module -Name $ModuleName -ListAvailable) {
-        Write-Host " Modul '$ModuleName' sudah terinstal." -ForegroundColor Green
-    } else {
-        Write-Host " Modul '$ModuleName' belum ditemukan. Menginstal..." -ForegroundColor Yellow
-        Install-Module -Name $ModuleName -Force -AllowClobber -Scope CurrentUser -ErrorAction Stop
-    }
-}
-
-$global:moduleStep = 1
-CheckAndInstallModule -ModuleName "PowerShellGet"
-CheckAndInstallModule -ModuleName "Microsoft.Entra"
-
-## -----------------------------------------------------------------------
-## 2. KONEKSI WAJIB (MICROSOFT ENTRA)
-## -----------------------------------------------------------------------
-
-Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Entra ---" -ForegroundColor Blue
-
-try {
-    Write-Host "Menghubungkan ke Microsoft Entra..." -ForegroundColor Yellow
-    Connect-Entra -Scopes 'IdentityProvider.Read.All' -ErrorAction Stop
-    Write-Host "Koneksi ke Microsoft Entra berhasil dibuat." -ForegroundColor Green
-} catch {
-    Write-Error "Gagal terhubung ke Microsoft Entra. $($_.Exception.Message)"
-    exit 1
-}
-
-## -----------------------------------------------------------------------
 ## 3. LOGIKA UTAMA SCRIPT
 ## -----------------------------------------------------------------------
 
@@ -119,21 +72,33 @@ try {
 }
 
 ## -----------------------------------------------------------------------
-## 4. CLEANUP, DISCONNECT, DAN EKSPOR HASIL
+## 4. EKSPOR HASIL
 ## -----------------------------------------------------------------------
 
-Write-Host "`n--- 4. Cleanup, Memutus Koneksi, dan Ekspor Hasil ---" -ForegroundColor Blue
-
 if ($scriptOutput.Count -gt 0) {
-    Write-Host "Mengekspor $($scriptOutput.Count) baris data hasil skrip..." -ForegroundColor Yellow
-    try {
-        $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8 -ErrorAction Stop
-        Write-Host " Data berhasil diekspor ke: $outputFilePath" -ForegroundColor Green
-    }
-    catch {
-        Write-Error "Gagal mengekspor data ke CSV: $($_.Exception.Message)"
-    }
-}
+    # 1. Tentukan nama folder
+    $exportFolderName = "exported_data"
+    
+    # 2. Ambil jalur dua tingkat di atas direktori skrip
+    # Contoh: Jika skrip di C:\Users\Erik\Project\Scripts, maka ini ke C:\Users\Erik\
+    $parentDir = (Get-Item $scriptDir).Parent.Parent.FullName
+    
+    # 3. Gabungkan menjadi jalur folder ekspor
+    $exportFolderPath = Join-Path -Path $parentDir -ChildPath $exportFolderName
 
-Disconnect-Entra -ErrorAction SilentlyContinue
-Write-Host "`nSkrip selesai dieksekusi." -ForegroundColor Yellow
+    # 4. Cek apakah folder 'exported_data' sudah ada di lokasi tersebut, jika belum buat baru
+    if (-not (Test-Path -Path $exportFolderPath)) {
+        New-Item -Path $exportFolderPath -ItemType Directory | Out-Null
+        Write-Host "`nFolder '$exportFolderName' berhasil dibuat di: $parentDir" -ForegroundColor Yellow
+    }
+
+    # 5. Tentukan nama file dan jalur lengkap
+    $outputFileName = "Output_$($scriptName)_$($timestamp).csv"
+    $resultsFilePath = Join-Path -Path $exportFolderPath -ChildPath $outputFileName
+    
+    # 6. Ekspor data
+    $scriptOutput | Export-Csv -Path $resultsFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
+    
+    Write-Host "`nSemua proses selesai!" -ForegroundColor Green
+    Write-Host "Laporan tersimpan di: ${resultsFilePath}" -ForegroundColor Cyan
+}

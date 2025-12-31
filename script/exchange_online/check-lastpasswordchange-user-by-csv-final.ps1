@@ -113,6 +113,7 @@ if (-not (Test-Path -Path $inputFilePath)) {
 ## -----------------------------------------------------------------------
 ## 4. EKSPOR HASIL
 ## -----------------------------------------------------------------------
+
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder
     $exportFolderName = "exported_data"
@@ -131,7 +132,7 @@ if ($scriptOutput.Count -gt 0) {
     }
 
     # 5. Tentukan nama file dan jalur lengkap
-    $outputFileName = "${operationType}_License_Results_${timestamp}.csv"
+    $outputFileName = "Output_$($scriptName)_$($timestamp).csv"
     $resultsFilePath = Join-Path -Path $exportFolderPath -ChildPath $outputFileName
     
     # 6. Ekspor data

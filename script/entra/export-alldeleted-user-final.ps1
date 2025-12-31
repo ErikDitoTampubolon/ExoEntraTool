@@ -105,21 +105,33 @@ try {
 }
 
 ## -----------------------------------------------------------------------
-## 4. CLEANUP, DISCONNECT, DAN EKSPOR HASIL
+## 4. EKSPOR HASIL
 ## -----------------------------------------------------------------------
 
-Write-Host "`n--- 4. Cleanup, Memutus Koneksi, dan Ekspor Hasil ---" -ForegroundColor Blue
-
 if ($scriptOutput.Count -gt 0) {
-    Write-Host "Mengekspor data ke CSV..." -ForegroundColor Yellow
-    try {
-        $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8 -ErrorAction Stop
-        Write-Host "Data tersimpan di: $outputFilePath" -ForegroundColor Green
-    }
-    catch {
-        Write-Error "Gagal ekspor: $($_.Exception.Message)"
-    }
-}
+    # 1. Tentukan nama folder
+    $exportFolderName = "exported_data"
+    
+    # 2. Ambil jalur dua tingkat di atas direktori skrip
+    # Contoh: Jika skrip di C:\Users\Erik\Project\Scripts, maka ini ke C:\Users\Erik\
+    $parentDir = (Get-Item $scriptDir).Parent.Parent.FullName
+    
+    # 3. Gabungkan menjadi jalur folder ekspor
+    $exportFolderPath = Join-Path -Path $parentDir -ChildPath $exportFolderName
 
-Disconnect-Entra -ErrorAction SilentlyContinue
-Write-Host "`nSkrip selesai dieksekusi." -ForegroundColor Yellow
+    # 4. Cek apakah folder 'exported_data' sudah ada di lokasi tersebut, jika belum buat baru
+    if (-not (Test-Path -Path $exportFolderPath)) {
+        New-Item -Path $exportFolderPath -ItemType Directory | Out-Null
+        Write-Host "`nFolder '$exportFolderName' berhasil dibuat di: $parentDir" -ForegroundColor Yellow
+    }
+
+    # 5. Tentukan nama file dan jalur lengkap
+    $outputFileName = "Output_$($scriptName)_$($timestamp).csv"
+    $resultsFilePath = Join-Path -Path $exportFolderPath -ChildPath $outputFileName
+    
+    # 6. Ekspor data
+    $scriptOutput | Export-Csv -Path $resultsFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
+    
+    Write-Host "`nSemua proses selesai!" -ForegroundColor Green
+    Write-Host "Laporan tersimpan di: ${resultsFilePath}" -ForegroundColor Cyan
+}

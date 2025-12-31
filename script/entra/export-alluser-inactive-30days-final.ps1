@@ -1,19 +1,16 @@
 # =========================================================================
-# FRAMEWORK SCRIPT POWERSHELL DENGAN EKSPOR OTOMATIS (V2.1)
+# FRAMEWORK SCRIPT POWERSHELL DENGAN EKSPOR OTOMATIS (V2.1 - FIXED)
 # Nama Skrip: Export-EntraInactiveGuestUsers
 # Deskripsi: Mengambil daftar Guest User yang tidak aktif > 30 hari.
 # =========================================================================
 
 # Variabel Global dan Output
 $scriptName = "ExportEntraInactiveGuestUsers" 
-$scriptOutput = [System.Collections.ArrayList]::new() 
+$scriptOutput = [System.Collections.Generic.List[PSCustomObject]]::new() 
 
 # Tentukan jalur dan nama file output dinamis
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
-$outputFileName = "Output_$($scriptName)_$($timestamp).csv"
-$outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
-
 
 # ==========================================================
 #                INFORMASI SCRIPT                
@@ -49,17 +46,12 @@ if ($confirmation -ne "Y") {
 Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Entra ---" -ForegroundColor Blue
 
 try {
-    Write-Host "Menghubungkan ke Microsoft Entra. Selesaikan login pada pop-up..." -ForegroundColor Yellow
-    
-    # Menangani potensi konflik DLL dengan mencoba Disconnect terlebih dahulu
+    Write-Host "Menghubungkan ke Microsoft Entra..." -ForegroundColor Yellow
     Disconnect-Entra -ErrorAction SilentlyContinue
-    
-    # Koneksi utama
     Connect-Entra -Scopes 'AuditLog.Read.All','User.Read.All' -ErrorAction Stop
-    Write-Host "Koneksi ke Microsoft Entra berhasil dibuat." -ForegroundColor Green
+    Write-Host "Koneksi berhasil." -ForegroundColor Green
 } catch {
     Write-Error "Gagal terhubung: $($_.Exception.Message)"
-    Write-Host "`nTIP: Jika error library berlanjut, tutup SEMUA jendela PowerShell lalu buka kembali." -ForegroundColor Yellow
     exit 1
 }
 
@@ -67,13 +59,14 @@ try {
 ## 3. LOGIKA UTAMA SCRIPT
 ## -----------------------------------------------------------------------
 
-Write-Host "`n--- 3. Memulai Logika Utama Skrip: $($scriptName) ---" -ForegroundColor Magenta
+Write-Host "`n--- 3. Memulai Logika Utama Skrip ---" -ForegroundColor Magenta
 
 try {
-    Write-Host "Menganalisis seluruh pengguna yang tidak aktif > 30 hari..." -ForegroundColor Cyan
+    Write-Host "Menganalisis pengguna tidak aktif (LastSignIn < 30 hari lalu)..." -ForegroundColor Cyan
     
-    # Menjalankan logika utama: Get-EntraInactiveSignInUser -LastSignInBeforeDaysAgo 30 -All
-    $inactiveUsers = Get-EntraInactiveSignInUser -LastSignInBeforeDaysAgo 30 -All -ErrorAction Stop
+    # PERBAIKAN: Menghapus parameter -All karena tidak didukung oleh cmdlet ini
+    $inactiveUsers = Get-EntraInactiveSignInUser -LastSignInBeforeDaysAgo 30 -ErrorAction Stop
+    
     $totalData = $inactiveUsers.Count
     
     if ($totalData -gt 0) {
@@ -81,11 +74,10 @@ try {
         foreach ($user in $inactiveUsers) {
             $i++
             
-            # Output progres baris tunggal (UI Refresh) sesuai permintaan sebelumnya
-            $statusText = "-> [$i/$totalData] Memproses: $($user.UserPrincipalName) . . ."
-            Write-Host "`r$statusText" -ForegroundColor Green -NoNewline
+            # Update Progres UI
+            Write-Host "`r-> [$i/$totalData] Memproses: $($user.UserPrincipalName)" -ForegroundColor Green -NoNewline
             
-            # Mapping data ke objek hasil untuk ekspor CSV
+            # Mapping data
             $obj = [PSCustomObject]@{
                 DisplayName              = $user.DisplayName
                 UserPrincipalName        = $user.UserPrincipalName
@@ -95,40 +87,42 @@ try {
                 LastNonInteractiveSignIn = $user.SignInActivity.LastNonInteractiveSignInDateTime
                 Id                       = $user.Id
             }
-            [void]$scriptOutput.Add($obj)
+            $scriptOutput.Add($obj)
         }
-        Write-Host "`n`nBerhasil memproses $totalData pengguna tidak aktif." -ForegroundColor Green
+        Write-Host "`n`nBerhasil memproses $totalData pengguna." -ForegroundColor Green
     } else {
-        Write-Host "Tidak ditemukan pengguna yang tidak aktif dalam 30 hari terakhir." -ForegroundColor Yellow
+        Write-Host "Tidak ditemukan pengguna tidak aktif." -ForegroundColor Yellow
     }
 } catch {
     Write-Error "Terjadi kesalahan saat mengambil data: $($_.Exception.Message)"
 }
 
 ## -----------------------------------------------------------------------
-## 4. CLEANUP, DISCONNECT, DAN EKSPOR HASIL
+## 4. EKSPOR HASIL
 ## -----------------------------------------------------------------------
 
-Write-Host "`n--- 4. Cleanup, Memutus Koneksi, dan Ekspor Hasil ---" -ForegroundColor Blue
-
-# 4.1. Ekspor Hasil
 if ($scriptOutput.Count -gt 0) {
-    Write-Host "Mengekspor data ke file CSV..." -ForegroundColor Yellow
+    Write-Host "`n--- 4. Mengekspor Hasil ---" -ForegroundColor Blue
+    
     try {
-        # Menggunakan titik koma (;) sebagai delimiter agar rapi saat dibuka di Excel
-        $scriptOutput | Export-Csv -Path $outputFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8 -ErrorAction Stop
-        Write-Host " Data berhasil diekspor ke: $outputFilePath" -ForegroundColor Green
+        $exportFolderName = "exported_data"
+        # Jalur folder: 2 tingkat di atas folder skrip
+        $parentDir = (Get-Item $scriptDir).Parent.Parent.FullName
+        $exportFolderPath = Join-Path -Path $parentDir -ChildPath $exportFolderName
+
+        if (-not (Test-Path -Path $exportFolderPath)) {
+            New-Item -Path $exportFolderPath -ItemType Directory | Out-Null
+        }
+
+        $resultsFilePath = Join-Path -Path $exportFolderPath -ChildPath "Output_$($scriptName)_$($timestamp).csv"
+        
+        $scriptOutput | Export-Csv -Path $resultsFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
+        
+        Write-Host "Laporan tersimpan di: ${resultsFilePath}" -ForegroundColor Cyan
+    } catch {
+        Write-Error "Gagal mengekspor CSV: $($_.Exception.Message)"
     }
-    catch {
-        Write-Error "Gagal mengekspor data ke CSV: $($_.Exception.Message)"
-    }
-} else {
-    Write-Host " Tidak ada data yang dikumpulkan. Melewati ekspor." -ForegroundColor DarkYellow
 }
 
-# 4.2. Memutus koneksi Entra
-Write-Host "Memutuskan koneksi dari Microsoft Entra..." -ForegroundColor DarkYellow
 Disconnect-Entra -ErrorAction SilentlyContinue
-Write-Host " Sesi telah ditutup." -ForegroundColor Green
-
-Write-Host "`nSkrip $($scriptName) selesai dieksekusi." -ForegroundColor Yellow
+Write-Host "`nProses Selesai." -ForegroundColor Yellow

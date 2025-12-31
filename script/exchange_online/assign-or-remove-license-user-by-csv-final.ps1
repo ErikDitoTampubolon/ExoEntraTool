@@ -91,6 +91,7 @@ try {
 ## -----------------------------------------------------------------------
 ## 4. PROSES LOGIKA UTAMA (CLEAN OUTPUT & FIXED INTERPOLATION)
 ## -----------------------------------------------------------------------
+
 $allResults = @()
 $timestamp = Get-Date -Format "yyyyMMdd_HHmm"
 
@@ -169,6 +170,7 @@ Write-Progress -Activity "Selesai" -Completed
 ## -----------------------------------------------------------------------
 ## 5. EKSPOR HASIL
 ## -----------------------------------------------------------------------
+
 if ($allResults.Count -gt 0) {
     # 1. Tentukan nama folder
     $exportFolderName = "exported_data"

@@ -136,40 +136,31 @@ catch {
 ## -----------------------------------------------------------------------
 ## 4. EKSPOR HASIL (KE DUA TINGKAT DI ATAS)
 ## -----------------------------------------------------------------------
-Write-Host "`n--- 4. Cleanup dan Ekspor Hasil ---" -ForegroundColor Blue
 
 if ($scriptOutput.Count -gt 0) {
-    try {
-        # 1. Tentukan nama folder
-        $exportFolderName = "exported_data"
-        
-        # 2. Ambil jalur dua tingkat di atas direktori skrip
-        $parentDir = (Get-Item $scriptDir).Parent.Parent.FullName
-        
-        # 3. Gabungkan menjadi jalur folder ekspor
-        $exportFolderPath = Join-Path -Path $parentDir -ChildPath $exportFolderName
+    # 1. Tentukan nama folder
+    $exportFolderName = "exported_data"
+    
+    # 2. Ambil jalur dua tingkat di atas direktori skrip
+    # Contoh: Jika skrip di C:\Users\Erik\Project\Scripts, maka ini ke C:\Users\Erik\
+    $parentDir = (Get-Item $scriptDir).Parent.Parent.FullName
+    
+    # 3. Gabungkan menjadi jalur folder ekspor
+    $exportFolderPath = Join-Path -Path $parentDir -ChildPath $exportFolderName
 
-        # 4. Cek apakah folder 'exported_data' sudah ada, jika belum buat baru
-        if (-not (Test-Path -Path $exportFolderPath)) {
-            New-Item -Path $exportFolderPath -ItemType Directory | Out-Null
-            Write-Host "Folder '$exportFolderName' berhasil dibuat di: $parentDir" -ForegroundColor Yellow
-        }
+    # 4. Cek apakah folder 'exported_data' sudah ada di lokasi tersebut, jika belum buat baru
+    if (-not (Test-Path -Path $exportFolderPath)) {
+        New-Item -Path $exportFolderPath -ItemType Directory | Out-Null
+        Write-Host "`nFolder '$exportFolderName' berhasil dibuat di: $parentDir" -ForegroundColor Yellow
+    }
 
-        # 5. Tentukan nama file dan jalur lengkap
-        $outputFileName = "${scriptName}_Results_${timestamp}.csv"
-        $resultsFilePath = Join-Path -Path $exportFolderPath -ChildPath $outputFileName
-        
-        # 6. Ekspor data dengan pemisah semikolon (;) sesuai preferensi sebelumnya
-        $scriptOutput | Export-Csv -Path $resultsFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8 -ErrorAction Stop
-        
-        Write-Host "Data berhasil diekspor ke: $resultsFilePath" -ForegroundColor Green
-    }
-    catch {
-        Write-Error "Gagal mengekspor data ke CSV: $($_.Exception.Message)"
-    }
-} else {
-    Write-Host " Tidak ada data yang dikumpulkan. Melewati ekspor." -ForegroundColor DarkYellow
+    # 5. Tentukan nama file dan jalur lengkap
+    $outputFileName = "Output_$($scriptName)_$($timestamp).csv"
+    $resultsFilePath = Join-Path -Path $exportFolderPath -ChildPath $outputFileName
+    
+    # 6. Ekspor data
+    $scriptOutput | Export-Csv -Path $resultsFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
+    
+    Write-Host "`nSemua proses selesai!" -ForegroundColor Green
+    Write-Host "Laporan tersimpan di: ${resultsFilePath}" -ForegroundColor Cyan
 }
-
-Write-Host "`nSkrip $($scriptName) selesai dieksekusi." -ForegroundColor Yellow
-

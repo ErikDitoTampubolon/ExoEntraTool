@@ -1,10 +1,3 @@
-<#
-.SYNOPSIS
-Membuat laporan tentang tanggal Last Logon kotak surat berdasarkan daftar email dari file CSV TANPA HEADER.
-.DESCRIPTION
-Skrip menggunakan parameter -Header pada Import-Csv sehingga baris pertama file CSV langsung dianggap sebagai data.
-#>
-
 # =========================================================================
 # FRAMEWORK SCRIPT POWERSHELL DENGAN EKSPOR OTOMATIS (V2.1 - No Header)
 # =========================================================================
@@ -135,6 +128,7 @@ if (-not (Test-Path -Path $inputFilePath)) {
 ## -----------------------------------------------------------------------
 ## 4. EKSPOR HASIL
 ## -----------------------------------------------------------------------
+
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder
     $exportFolderName = "exported_data"
@@ -153,9 +147,9 @@ if ($scriptOutput.Count -gt 0) {
     }
 
     # 5. Tentukan nama file dan jalur lengkap
-    $outputFileName = "${operationType}_License_Results_${timestamp}.csv"
+    $outputFileName = "Output_${scriptName}_${timestamp}.csv"
     $resultsFilePath = Join-Path -Path $exportFolderPath -ChildPath $outputFileName
-    
+
     # 6. Ekspor data
     $scriptOutput | Export-Csv -Path $resultsFilePath -NoTypeInformation -Delimiter ";" -Encoding UTF8
     
