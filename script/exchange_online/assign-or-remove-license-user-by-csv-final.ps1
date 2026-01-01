@@ -1,7 +1,7 @@
-# =========================================================================
+# ==========================================================================
 # LISENSI MICROSOFT GRAPH ASSIGNMENT/REMOVAL SCRIPT V19.3 (Final Stability)
 # AUTHOR: Erik Dito Tampubolon - TelkomSigma
-# =========================================================================
+# ==========================================================================
 
 # 1. Konfigurasi File Input & Path
 $inputFileName = "UserPrincipalName.csv"
