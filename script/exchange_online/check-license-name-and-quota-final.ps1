@@ -4,8 +4,8 @@
 # =========================================================================
 
 # Variabel Global dan Output
-$scriptName = "ExportLicenseQuotaReport" # Nama skrip yang sebenarnya
-$scriptOutput = @() # Array tempat semua data hasil skrip dikumpulkan
+$scriptName = "ExportLicenseQuotaReport" 
+$scriptOutput = @()
 
 # Tentukan jalur dan nama file output dinamis
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"

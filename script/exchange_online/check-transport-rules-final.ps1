@@ -4,7 +4,7 @@
 # =========================================================================
 
 # Variabel Global dan Output
-$scriptName = "ExportTransportRulesToCSV"
+$scriptName = "TransportRulesReport"
 $scriptOutput = @()
 
 # Tentukan jalur dan nama file output dinamis

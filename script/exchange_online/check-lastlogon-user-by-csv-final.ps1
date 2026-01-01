@@ -3,7 +3,7 @@
 # =========================================================================
 
 # Variabel Global dan Output
-$scriptName = "MailboxLastLogonReport" 
+$scriptName = "MailboxLastLogonByCSVReport" 
 $scriptOutput = @() 
 $inputFileName = "UserPrincipalName.csv"
 

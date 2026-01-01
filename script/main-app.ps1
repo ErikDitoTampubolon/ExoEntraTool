@@ -130,14 +130,14 @@ while ($mainRunning) {
                 if ($subChoice.ToUpper() -eq "B") { $subRunning = $false }
                 elseif ($subChoice -eq "1") { & (Join-Path $scriptDir "script\exchange_online\assign-or-remove-license-user-by-csv-final.ps1"); Pause }
                 elseif ($subChoice -eq "2") { & (Join-Path $scriptDir "script\exchange_online\check-license-name-and-quota-final.ps1"); Pause }
-                elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\exchange_online\export-mailbox-final.ps1"); Pause }
+                elseif ($subChoice -eq "3") { & (Join-Path $scriptDir "script\exchange_online\check-mailbox-storage-user-by-csv-final.ps1"); Pause }
                 elseif ($subChoice -eq "4") { & (Join-Path $scriptDir "script\exchange_online\export-active-users-final.ps1"); Pause }
                 elseif ($subChoice -eq "5") { & (Join-Path $scriptDir "script\exchange_online\export-alluser-userprincipalname-contact-final.ps1"); Pause }
                 elseif ($subChoice -eq "6") { & (Join-Path $scriptDir "script\exchange_online\check-lastpasswordchange-user-by-csv-final.ps1"); Pause }
-                elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\exchange_online\export-userprincipalname-contact-by-csv-final.ps1"); Pause }
+                elseif ($subChoice -eq "7") { & (Join-Path $scriptDir "script\exchange_online\export-alluser-userprincipalname-contact-by-csv-final.ps1"); Pause }
                 elseif ($subChoice -eq "8") { & (Join-Path $scriptDir "script\exchange_online\check-storage-user-by-csv-final.ps1"); Pause }
                 elseif ($subChoice -eq "9") { & (Join-Path $scriptDir "script\exchange_online\check-lastlogon-user-by-csv-final.ps1"); Pause }
-                elseif ($subChoice -eq "10") { & (Join-Path $scriptDir "script\exchange_online\check-rules-final.ps1"); Pause }
+                elseif ($subChoice -eq "10") { & (Join-Path $scriptDir "script\exchange_online\check-transport-rules-final.ps1"); Pause }
             }
         }
         "2" { 

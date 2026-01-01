@@ -3,7 +3,7 @@
 # =========================================================================
 
 # Variabel Global dan Output
-$scriptName = "PasswordChangeReport" 
+$scriptName = "PasswordChangeByCSVReport" 
 $scriptOutput = @() 
 $inputFileName = "UserPrincipalName.csv"
 
