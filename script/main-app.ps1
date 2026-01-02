@@ -121,7 +121,7 @@ while ($mainRunning) {
                 Write-Host "  7. Export List Active User (DisplayName,UPN,Contact) by .csv"
                 Write-Host "  8. Export List Active User OneDrive Usage by .csv"
                 Write-Host "  9. Export List Active User Last Logon by .csv"
-                Write-Host "  10. Export List Mail Flow Rules"
+                Write-Host "  10. Export List Transport Rules"
                 Write-Host ""
                 Write-Host "  B. Kembali ke Menu Utama" -ForegroundColor Yellow
                 Write-Host "---------------------------------------------" -ForegroundColor DarkCyan
