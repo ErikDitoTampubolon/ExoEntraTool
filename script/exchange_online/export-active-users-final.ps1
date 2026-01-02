@@ -29,9 +29,9 @@ function CheckAndInstallModule {
 
 CheckAndInstallModule -ModuleName "Microsoft.Graph" 
 
-# ==========================================================
-#                INFORMASI SCRIPT                
-# ==========================================================
+# ==========================================================================
+#                           INFORMASI SCRIPT                
+# ==========================================================================
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -49,9 +49,9 @@ Write-Host " Field Kolom       : [UserPrincipalName]
 Write-Host " Deskripsi Singkat : Script ini berfungsi untuk membuat laporan detail semua pengguna aktif, termasuk informasi kontak (nomor telepon kantor dan mobile), email, jabatan, departemen, lokasi penggunaan, lisensi yang dimiliki, serta tanggal pembuatan akun. Hasil laporan diekspor otomatis ke file CSV." -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Yellow
 
-# ==========================================================
-# KONFIRMASI EKSEKUSI
-# ==========================================================
+# ==========================================================================
+#                           KONFIRMASI EKSEKUSI
+# ==========================================================================
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {
@@ -59,9 +59,9 @@ if ($confirmation -ne "Y") {
     return
 }
 
-## -----------------------------------------------------------------------
-## 2. KONEKSI WAJIB (MICROSOFT GRAPH)
-## -----------------------------------------------------------------------
+# ==========================================================================
+#                       KONEKSI KE MICROSOFT GRAPH
+# ==========================================================================
 
 Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue 
 
@@ -80,9 +80,9 @@ if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
     Write-Host "Sesi sudah aktif." -ForegroundColor Green 
 } 
 
-## -----------------------------------------------------------------------
-## 3. LOGIKA UTAMA SCRIPT: EXPORT ACTIVE USERS + CONTACTS
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                          LOGIKA UTAMA SCRIPT
+## ==========================================================================
 
 Write-Host "`n--- 3. Memulai Logika Utama Skrip: $($scriptName) ---" -ForegroundColor Magenta
 
@@ -140,9 +140,10 @@ catch {
     Write-Error "Terjadi kesalahan: $($_.Exception.Message)"
 }
 
-## -----------------------------------------------------------------------
-## 4. EKSPOR HASIL
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                              EKSPOR HASIL
+## ==========================================================================
+
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder
     $exportFolderName = "exported_data"

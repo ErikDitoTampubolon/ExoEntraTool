@@ -16,9 +16,9 @@ $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $outputFileName = "Output_${scriptName}_${timestamp}.csv"
 $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 
-# ==========================================================
-#                INFORMASI SCRIPT                
-# ==========================================================
+# ==========================================================================
+#                               INFORMASI SCRIPT                
+# ==========================================================================
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -31,9 +31,9 @@ Write-Host " Field Kolom       : [UserPrincipalName]
 Write-Host " Deskripsi Singkat : Script ini berfungsi untuk membuat laporan tanggal terakhir pengguna mengganti password berdasarkan daftar UPN dari file CSV tanpa header. Script akan menghubungkan ke Microsoft Graph, mengambil atribut LastPasswordChangeDateTime, mengonversinya ke zona waktu WIB, menampilkan progres eksekusi di konsol, serta mengekspor hasil ke file CSV." -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Yellow
 
-# ==========================================================
-# KONFIRMASI EKSEKUSI
-# ==========================================================
+# ==========================================================================
+#                               KONFIRMASI EKSEKUSI
+# ==========================================================================
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {
@@ -41,9 +41,10 @@ if ($confirmation -ne "Y") {
     return
 }
 
-## -----------------------------------------------------------------------
-## 2. KONEKSI WAJIB (MICROSOFT GRAPH)
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                          KONEKSI KE MICROSOFT GRAPH
+## ==========================================================================
+
 
 if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
     Write-Host "`n--- Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
@@ -55,9 +56,9 @@ if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
     }
 }
 
-## -----------------------------------------------------------------------
-## 3. LOGIKA UTAMA SCRIPT
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                              LOGIKA UTAMA SCRIPT
+## ==========================================================================
 
 Write-Host "`n--- 3. Memulai Logika Utama Skrip: ${scriptName} ---" -ForegroundColor Magenta
 
@@ -110,9 +111,9 @@ if (-not (Test-Path -Path $inputFilePath)) {
     }
 }
 
-## -----------------------------------------------------------------------
-## 4. EKSPOR HASIL
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                              EKSPOR HASIL
+## ==========================================================================
 
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder

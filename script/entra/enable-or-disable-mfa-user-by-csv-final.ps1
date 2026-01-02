@@ -17,9 +17,10 @@ $outputFileName = "Output_$($scriptName)_$($timestamp).csv"
 $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 
 
-# ==========================================================
-#                INFORMASI SCRIPT                
-# ==========================================================
+## ==========================================================================
+#                           INFORMASI SCRIPT                
+## ==========================================================================
+
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -32,9 +33,10 @@ Write-Host " Field Kolom       : [Timestamp]
 Write-Host " Deskripsi Singkat : Script ini berfungsi untuk mengelola status MFA (Enable/Disable) secara massal berdasarkan daftar UPN dari file CSV tanpa header. Script akan memvalidasi format UPN, menampilkan progres eksekusi di konsol, serta mengekspor hasil detail ke file CSV." -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Yellow
 
-# ==========================================================
-# KONFIRMASI EKSEKUSI
-# ==========================================================
+## ==========================================================================
+#                           KONFIRMASI EKSEKUSI
+## ==========================================================================
+
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {
@@ -42,9 +44,9 @@ if ($confirmation -ne "Y") {
     return
 }
 
-## -----------------------------------------------------------------------
-## 2. PEMILIHAN OPERASI & KONEKSI
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                      PEMILIHAN OPERASI & KONEKSI
+## ==========================================================================
 
 Write-Host "`n--- 2. Pemilihan Operasi MFA ---" -ForegroundColor Blue
 $operationChoice = Read-Host "Pilih operasi: (1) Enable MFA | (2) Disable MFA"
@@ -73,9 +75,9 @@ try {
     exit 1
 }
 
-## -----------------------------------------------------------------------
-## 3. LOGIKA UTAMA SCRIPT
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                          LOGIKA UTAMA SCRIPT
+## ==========================================================================
 
 Write-Host "`n--- 3. Memproses Operasi: $operationType ---" -ForegroundColor Magenta
 
@@ -139,10 +141,9 @@ if (Test-Path $inputFilePath) {
     Write-Host "ERROR: File '$inputFileName' tidak ditemukan di $scriptDir" -ForegroundColor Red
 }
 
-## -----------------------------------------------------------------------
-## 4. EKSPOR HASIL
-## -----------------------------------------------------------------------
-
+## ==========================================================================
+##                              EKSPOR HASIL
+## ==========================================================================
 
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder

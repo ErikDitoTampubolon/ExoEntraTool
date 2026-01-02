@@ -18,9 +18,10 @@ $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $outputFileName = "Output_$($scriptName)_$($timestamp).csv"
 $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 
-# ==========================================================
-#                INFORMASI SCRIPT                
-# ==========================================================
+## ==========================================================================
+#                           INFORMASI SCRIPT                
+## ==========================================================================
+
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -34,9 +35,9 @@ Write-Host " Field Kolom       : [UserPrincipalName]
 Write-Host " Deskripsi Singkat : Script ini berfungsi untuk menarik daftar metode autentikasi yang dimiliki user berdasarkan daftar UPN dari file CSV tanpa header. Script menampilkan progres eksekusi di konsol, lalu mengekspor hasil ke folder 'exported_data' dua tingkat di atas direktori skrip." -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Yellow
 
-## -----------------------------------------------------------------------
-## 3. LOGIKA UTAMA SCRIPT
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                          LOGIKA UTAMA SCRIPT
+## ==========================================================================
 
 Write-Host "`n--- 3. Memulai Logika Utama Skrip: $($scriptName) ---" -ForegroundColor Magenta
 
@@ -90,9 +91,9 @@ if (Test-Path $inputFilePath) {
     Write-Host "ERROR: File '$inputFileName' tidak ditemukan di folder skrip!" -ForegroundColor Red
 }
 
-## -----------------------------------------------------------------------
-## 4. EKSPOR HASIL
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                              EKSPOR HASIL
+## ==========================================================================
 
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder

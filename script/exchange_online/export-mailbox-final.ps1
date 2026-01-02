@@ -16,9 +16,10 @@ $outputFileName = "Output_$($scriptName)_$($timestamp).csv"
 $scriptDir = if ($PSScriptRoot) {$PSScriptRoot} else {(Get-Location).Path}
 $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 
-# ==========================================================
-#                INFORMASI SCRIPT                
-# ==========================================================
+## ==========================================================================
+#                           INFORMASI SCRIPT                
+## ==========================================================================
+
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -29,9 +30,10 @@ Write-Host " Field Kolom       : [DisplayName]
 Write-Host " Deskripsi Singkat : Script ini berfungsi untuk mengambil semua mailbox pengguna dari Exchange Online, termasuk informasi DisplayName, SamAccountName, dan Primary SMTP Address. Hasil laporan ditampilkan di konsol dan diekspor otomatis ke file CSV." -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Yellow
 
-# ==========================================================
-# KONFIRMASI EKSEKUSI
-# ==========================================================
+## ==========================================================================
+#                           KONFIRMASI EKSEKUSI
+## ==========================================================================
+
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {
@@ -39,9 +41,9 @@ if ($confirmation -ne "Y") {
     return
 }
 
-## -----------------------------------------------------------------------
-## 3. LOGIKA UTAMA SCRIPT ANDA DI SINI
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                          LOGIKA UTAMA SCRIPT
+## ==========================================================================
 
 Write-Host "`n--- 3. Memulai Logika Utama Skrip: $($scriptName) ---" -ForegroundColor Magenta
 
@@ -69,9 +71,9 @@ catch {
     }
 }
 
-## -----------------------------------------------------------------------
-## 4. EKSPOR HASIL
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                              EKSPOR HASIL
+## ==========================================================================
 
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder

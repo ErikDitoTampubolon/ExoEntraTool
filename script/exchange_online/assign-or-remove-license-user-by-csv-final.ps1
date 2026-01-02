@@ -11,9 +11,9 @@ $inputFilePath = Join-Path -Path $scriptDir -ChildPath $inputFileName
 $defaultUsageLocation = 'ID'
 $operationType = "" 
 
-# ==========================================================
-#                INFORMASI SCRIPT                
-# ==========================================================
+# ==========================================================================
+#                               INFORMASI SCRIPT                
+# ==========================================================================
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -25,9 +25,9 @@ Write-Host " Field Kolom       : [UserPrincipalName]
 Write-Host " Deskripsi Singkat : Script ini berfungsi untuk melakukan otomatisasi proses pemberian (assign) atau penghapusan (remove) lisensi menggunakan daftar CSV." -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Yellow
 
-# ==========================================================
-# KONFIRMASI EKSEKUSI
-# ==========================================================
+# ==========================================================================
+#                             KONFIRMASI EKSEKUSI
+# ==========================================================================
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {
@@ -35,9 +35,9 @@ if ($confirmation -ne "Y") {
     return
 }
 
-## -----------------------------------------------------------------------
-## 2. KONEKSI KE MICROSOFT GRAPH (SILENT MODE)
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                      KONEKSI KE MICROSOFT GRAPH
+## ==========================================================================
 $requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
 Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
 
@@ -54,9 +54,9 @@ if (Get-MgContext -ErrorAction SilentlyContinue) {
     }
 }
 
-## -----------------------------------------------------------------------
-## 3. PEMILIHAN OPERASI DAN LISENSI 
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                      PEMILIHAN OPERASI DAN LISENSI
+## ==========================================================================
 
 Write-Host "`n--- 3. Pemilihan Operasi ---" -ForegroundColor Blue
 $operationChoice = Read-Host "Pilih operasi: (1) Assign License | (2) Remove License"
@@ -88,9 +88,9 @@ try {
     return
 }
 
-## -----------------------------------------------------------------------
-## 4. PROSES LOGIKA UTAMA (CLEAN OUTPUT & FIXED INTERPOLATION)
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                            LOGIKA UTAMA SCRIPT
+## ==========================================================================
 
 $allResults = @()
 $timestamp = Get-Date -Format "yyyyMMdd_HHmm"
@@ -167,9 +167,9 @@ foreach ($entry in $users) {
 }
 Write-Progress -Activity "Selesai" -Completed
 
-## -----------------------------------------------------------------------
-## 5. EKSPOR HASIL
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                              EKSPOR HASIL
+## ==========================================================================
 
 if ($allResults.Count -gt 0) {
     # 1. Tentukan nama folder

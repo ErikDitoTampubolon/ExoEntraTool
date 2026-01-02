@@ -14,9 +14,10 @@ $scriptDir = if ($PSScriptRoot) {$PSScriptRoot} else {(Get-Location).Path}
 $outputFileName = "Output_${scriptName}_${timestamp}.csv"
 $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 
-# ==========================================================
-#                INFORMASI SCRIPT                
-# ==========================================================
+## ==========================================================================
+#                           INFORMASI SCRIPT                
+## ==========================================================================
+
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -28,7 +29,10 @@ Write-Host " Deskripsi Singkat : Script ini berfungsi untuk mengambil data selur
 Write-Host "==========================================================" -ForegroundColor Yellow
 
 # ==========================================================
+## ==========================================================================
+# ==========================================================
 # KONFIRMASI EKSEKUSI
+## ==========================================================================
 # ==========================================================
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
@@ -37,9 +41,9 @@ if ($confirmation -ne "Y") {
     return
 }
 
-## -----------------------------------------------------------------------
-## 2. PRASYARAT DAN KONEKSI
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                         PRASYARAT DAN KONEKSI
+## ==========================================================================
 
 Write-Host "--- 1. Menyiapkan Lingkungan ---" -ForegroundColor Blue 
 if (-not (Get-MgContext -ErrorAction SilentlyContinue)) { 
@@ -47,9 +51,10 @@ if (-not (Get-MgContext -ErrorAction SilentlyContinue)) {
 }
 
 
-## -----------------------------------------------------------------------
-## 3. LOGIKA UTAMA SCRIPT
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                          LOGIKA UTAMA SCRIPT
+## ==========================================================================
+
 Write-Host "`n--- 3. Memulai Logika Utama Skrip: ${scriptName} ---" -ForegroundColor Magenta 
 
 try {
@@ -87,9 +92,10 @@ catch {
     Write-Error "Kesalahan saat pengambilan data: $($_.Exception.Message)"
 }
 
-## -----------------------------------------------------------------------
-## 4. EKSPOR HASIL
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                              EKSPOR HASIL
+## ==========================================================================
+
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder
     $exportFolderName = "exported_data"

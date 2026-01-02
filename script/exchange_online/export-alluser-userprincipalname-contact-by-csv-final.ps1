@@ -19,9 +19,10 @@ $inputFilePath = Join-Path -Path $scriptDir -ChildPath $inputFileName
 $outputFileName = "Output_$($scriptName)_$($timestamp).csv"
 $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 
-# ==========================================================
-#                INFORMASI SCRIPT                
-# ==========================================================
+# ==========================================================================
+#                            INFORMASI SCRIPT                
+# ==========================================================================
+
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -33,9 +34,10 @@ Write-Host " Field Kolom       : [InputUser]
 Write-Host " Deskripsi Singkat : Script ini berfungsi untuk membuat laporan kontak pengguna Microsoft Entra ID berdasarkan daftar UPN dari file CSV tanpa header. Script menampilkan progres eksekusi di konsol, mengambil informasi DisplayName, UPN, serta nomor telepon (BusinessPhones dan MobilePhone), lalu mengekspor hasil ke file CSV." -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Yellow
 
-# ==========================================================
-# KONFIRMASI EKSEKUSI
-# ==========================================================
+## ==========================================================================
+##                          KONFIRMASI EKSEKUSI
+## ==========================================================================
+
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {
@@ -43,18 +45,18 @@ if ($confirmation -ne "Y") {
     return
 }
 
-## -----------------------------------------------------------------------
-## 1. PRASYARAT DAN KONEKSI
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                          PRASYARAT DAN KONEKSI
+## ==========================================================================
 
 Write-Host "--- 1. Menyiapkan Lingkungan ---" -ForegroundColor Blue 
 if (-not (Get-MgContext -ErrorAction SilentlyContinue)) { 
     Connect-MgGraph -Scopes "User.Read.All" -ErrorAction Stop | Out-Null
 }
 
-## -----------------------------------------------------------------------
-## 2. LOGIKA UTAMA SCRIPT
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                          LOGIKA UTAMA SCRIPT
+## ==========================================================================
 
 Write-Host "`n--- 2. Memulai Logika Utama Skrip ---" -ForegroundColor Magenta 
 
@@ -111,9 +113,10 @@ foreach ($row in $csvData) {
     }
 }
 
-## -----------------------------------------------------------------------
-## 3. EKSPOR HASIL
-## -----------------------------------------------------------------------
+## ==========================================================================
+##                              EKSPOR HASIL
+## ==========================================================================
+
 if ($scriptOutput.Count -gt 0) {
     # 1. Tentukan nama folder
     $exportFolderName = "exported_data"
