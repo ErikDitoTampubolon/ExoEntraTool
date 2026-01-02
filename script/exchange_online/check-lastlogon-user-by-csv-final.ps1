@@ -19,6 +19,7 @@ $outputFilePath = Join-Path -Path $scriptDir -ChildPath $outputFileName
 # ==========================================================================
 #                           INFORMASI SCRIPT                
 # ==========================================================================
+
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -34,6 +35,7 @@ Write-Host "==========================================================" -Foregro
 # ==========================================================================
 #                           KONFIRMASI EKSEKUSI
 # ==========================================================================
+
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {

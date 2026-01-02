@@ -28,12 +28,10 @@ Write-Host " Field Kolom       : [DisplayName]
 Write-Host " Deskripsi Singkat : Script ini berfungsi untuk mengambil data seluruh pengguna aktif, termasuk DisplayName, UserPrincipalName, dan informasi kontak (BusinessPhones serta MobilePhone). Hasil laporan ditampilkan di konsol dengan progres bar dan diekspor otomatis ke file CSV." -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Yellow
 
-# ==========================================================
 ## ==========================================================================
-# ==========================================================
-# KONFIRMASI EKSEKUSI
+#                           KONFIRMASI EKSEKUSI
 ## ==========================================================================
-# ==========================================================
+
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {

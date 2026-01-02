@@ -30,7 +30,7 @@ Write-Host " Deskripsi Singkat : Script ini berfungsi untuk mengambil semua data
 Write-Host "==========================================================" -ForegroundColor Yellow
 
 ## ==========================================================================
-#                        KONFIRMASI EKSEKUSI
+#                           KONFIRMASI EKSEKUSI
 ## ==========================================================================
 
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
@@ -41,7 +41,7 @@ if ($confirmation -ne "Y") {
 }
 
 ## ==========================================================================
-##                  KONEKSI WAJIB (MICROSOFT ENTRA)
+##                      KONEKSI WAJIB (MICROSOFT ENTRA)
 ## ==========================================================================
 
 Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Entra ---" -ForegroundColor Blue

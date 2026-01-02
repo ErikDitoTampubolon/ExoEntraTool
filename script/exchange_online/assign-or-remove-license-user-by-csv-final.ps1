@@ -14,6 +14,7 @@ $operationType = ""
 # ==========================================================================
 #                               INFORMASI SCRIPT                
 # ==========================================================================
+
 Write-Host "`n================================================" -ForegroundColor Yellow
 Write-Host "                INFORMASI SCRIPT                " -ForegroundColor Yellow
 Write-Host "================================================" -ForegroundColor Yellow
@@ -28,6 +29,7 @@ Write-Host "==========================================================" -Foregro
 # ==========================================================================
 #                             KONFIRMASI EKSEKUSI
 # ==========================================================================
+
 $confirmation = Read-Host "Apakah Anda ingin menjalankan skrip ini? (Y/N)"
 
 if ($confirmation -ne "Y") {
@@ -38,6 +40,7 @@ if ($confirmation -ne "Y") {
 ## ==========================================================================
 ##                      KONEKSI KE MICROSOFT GRAPH
 ## ==========================================================================
+
 $requiredScopes = "User.ReadWrite.All", "Organization.Read.All"
 Write-Host "`n--- 2. Membangun Koneksi ke Microsoft Graph ---" -ForegroundColor Blue
 
