@@ -7,6 +7,69 @@
 $scriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
 if ([string]::IsNullOrWhiteSpace($scriptDir)) { $scriptDir = "." }
 
+# --- 0. FUNGSI PEMERIKSAAN INTEGRITAS FILE ---
+function Test-ScriptIntegrity {
+    Write-Host "--- 0. Memeriksa Integritas File Aplikasi ---" -ForegroundColor Blue
+    
+    # Daftar semua file yang harus ada
+    $requiredScripts = @(
+        "script\exchange_online\assign-or-remove-license-user-by-csv-final.ps1",
+        "script\exchange_online\check-license-name-and-quota-final.ps1",
+        "script\exchange_online\check-mailbox-storage-user-by-csv-final.ps1",
+        "script\exchange_online\export-active-users-final.ps1",
+        "script\exchange_online\export-alluser-userprincipalname-contact-final.ps1",
+        "script\exchange_online\check-lastpasswordchange-user-by-csv-final.ps1",
+        "script\exchange_online\export-alluser-userprincipalname-contact-by-csv-final.ps1",
+        "script\exchange_online\check-mailbox-storage-user-by-csv-final.ps1",
+        "script\exchange_online\check-lastlogon-user-by-csv-final.ps1",
+        "script\exchange_online\check-transport-rules-final.ps1",
+        "script\entra\enable-or-disable-mfa-user-by-csv-final.ps1",
+        "script\entra\force-password-change-alluser-by-csv-final.ps1",
+        "script\entra\export-alluser-mfa-final.ps1",
+        "script\entra\export-alldevice-final.ps1",
+        "script\entra\export-alluser-owned-device-final.ps1",
+        "script\entra\export-allapplication-final.ps1",
+        "script\entra\export-alldeleted-user-final.ps1",
+        "script\entra\export-alluser-inactive-30days-final.ps1",
+        "script\entra\export-list-alldevice-final.ps1",
+        "script\entra\check-conditional-access-policy-final.ps1",
+        "script\entra\check-user-auth-method-final.ps1",
+        "script\entra\check-permission-grant-policy-final.ps1",
+        "script\entra\check-entra-auth-policy-final.ps1",
+        "script\entra\check-entra-identity-provider-final.ps1"
+    )
+
+    $missingFiles = @()
+
+    foreach ($relPath in $requiredScripts) {
+        $fullPath = Join-Path $scriptDir $relPath
+        if (-not (Test-Path $fullPath)) {
+            $missingFiles += $relPath
+        }
+    }
+
+    if ($missingFiles.Count -gt 0) {
+        Write-Host "PERINGATAN: Terdapat $($missingFiles.Count) file skrip yang hilang!" -ForegroundColor Red
+        foreach ($file in $missingFiles) {
+            Write-Host " [!] Hilang: $file" -ForegroundColor Yellow
+        }
+        Write-Host "`nSilakan hubungi Team Modern Work - Telkomsigma untuk perbaikan file." -ForegroundColor Cyan
+        
+        $Host.UI.RawUI.FlushInputBuffer()
+        $choice = Read-Host "Apakah Anda ingin tetap menjalankan aplikasi dengan fitur terbatas? (Y/N)"
+        if ($choice.ToUpper() -ne 'Y') {
+            Write-Host "Aplikasi dihentikan. Sampai jumpa!" -ForegroundColor Red
+            exit
+        }
+    } else {
+        Write-Host "Integritas file OK. Semua modul skrip ditemukan.`n" -ForegroundColor Green
+    }
+}
+
+# Jalankan Health Check sebelum mulai
+Clear-Host
+Test-ScriptIntegrity
+
 # --- 1. Memeriksa Lingkungan PowerShell ---
 Set-ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction SilentlyContinue
 
