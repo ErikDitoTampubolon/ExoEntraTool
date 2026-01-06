@@ -62,7 +62,7 @@ function Test-ScriptIntegrity {
             exit
         }
     } else {
-        Write-Host "Integritas file OK. Semua modul skrip ditemukan.`n" -ForegroundColor Green
+        Write-Host "Integritas file OK. Semua skrip ditemukan.`n" -ForegroundColor Green
     }
 }
 
@@ -120,11 +120,24 @@ try {
     Write-Host "Peringatan: Gagal terkoneksi ke Entra." -ForegroundColor Yellow
 }
 
-# 2.3 KONEKSI EXCHANGE ONLINE
-if (-not (Get-PSSession | Where-Object {$_.ConfigurationName -eq "Microsoft.Exchange"})) {
-    Write-Host "Menghubungkan ke Exchange Online..." -ForegroundColor Yellow
-    Connect-ExchangeOnline -ShowProgress $false -ErrorAction SilentlyContinue
+# 2.3 KONEKSI EXCHANGE ONLINE (WAJIB - DENGAN ERROR HANDLING LENGKAP)
+Write-Host "Menghubungkan ke Exchange Online..." -ForegroundColor Yellow
+
+# Cek apakah sudah ada sesi Exchange Online
+$existingSession = Get-PSSession | Where-Object { $_.ConfigurationName -eq "Microsoft.Exchange" }
+
+if (-not $existingSession) {
+try {
+# Connect dengan ShowProgress TRUE agar user tahu proses login berjalan
+Connect-ExchangeOnline -ShowProgress $true -ErrorAction Stop
+Write-Host "Koneksi ke Exchange Online berhasil" -ForegroundColor Green
 }
+catch {
+Write-Host "`nGagal terhubung ke Exchange Online!" -ForegroundColor Red
+Write-Host "Detail Error: $($_.Exception.Message)" -ForegroundColor Yellow
+
+exit 1
+}}
 
 Write-Host "`nSemua layanan terhubung. Memuat antarmuka..." -ForegroundColor Green
 Start-Sleep -Seconds 1
