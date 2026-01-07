@@ -1,0 +1,4 @@
+﻿"Organization";"Date";"EventType";"Direction";"MessageCount";"VerdictSource";"ThreatClassification"
+"M365x57702712.onmicrosoft.com";"1/6/2026 12:00:00 AM";"Message passed";"Inbound";"2";"NotSpam";"None"
+"M365x57702712.onmicrosoft.com";"1/4/2026 12:00:00 AM";"Message passed";"Inbound";"2";"NotSpam";"None"
+"M365x57702712.onmicrosoft.com";"1/2/2026 12:00:00 AM";"Message passed";"Inbound";"1";"NotSpam";"None"
