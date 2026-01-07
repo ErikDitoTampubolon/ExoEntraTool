@@ -178,7 +178,7 @@ while ($mainRunning) {
     Show-Header
     Write-Host "Menu Utama:" -ForegroundColor Yellow
     Write-Host "  1. Microsoft Exchange Online"
-    Write-Host "  2. Microsoft Entra (Entra ID)"
+    Write-Host "  2. Microsoft Entra ID"
     Write-Host ""
     Write-Host "  10. Keluar & Putus Koneksi" -ForegroundColor Red
     Write-Host "======================================================================" -ForegroundColor DarkCyan
@@ -225,7 +225,7 @@ while ($mainRunning) {
             $subRunning = $true
             while ($subRunning) {
                 Show-Header
-                Write-Host "Sub-Menu: Microsoft Entra (Entra ID)" -ForegroundColor Yellow
+                Write-Host "Sub-Menu: Microsoft Entra ID" -ForegroundColor Yellow
                 Write-Host "  1. Enable or Disable MFA User by .csv"
                 Write-Host "  2. Force Change Password User by .csv"
                 Write-Host "  3. Export List All User MFA Status"
