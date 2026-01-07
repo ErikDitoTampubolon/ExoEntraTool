@@ -63,7 +63,7 @@ function Test-ScriptIntegrity {
             exit
         }
     } else {
-        Write-Host "Integritas file OK. Semua skrip ditemukan.`n" -ForegroundColor Green
+        Write-Host "Integritas file terpenuhi. Semua skrip ditemukan.`n" -ForegroundColor Green
     }
 }
 
@@ -76,7 +76,7 @@ Set-ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction SilentlyCont
 
 function Check-Module {
     param($ModuleName)
-    Write-Host "Memeriksa Modul '$ModuleName'..." -ForegroundColor Cyan
+    Write-Host "Memeriksa Modul '$ModuleName'" -ForegroundColor Cyan
     if (Get-Module -Name $ModuleName -ListAvailable) {
         Write-Host "Terinstal." -ForegroundColor Green
     } else {
@@ -101,28 +101,28 @@ if (Get-MgContext -ErrorAction SilentlyContinue) {
     Disconnect-MgGraph
 }
 
-Write-Host "Anda akan diminta untuk login. Pastikan Anda menyetujui scopes berikut:" -ForegroundColor Cyan
-Write-Host $requiredScopes -ForegroundColor Yellow
+Write-Host "Anda akan diminta untuk login menggunakan akun Global Administrator." -ForegroundColor Cyan
+Write-Host "Menghubungkan ke Microsoft Graph" -ForegroundColor Yellow
 
 try {
     Connect-MgGraph -Scopes $requiredScopes -ErrorAction Stop | Out-Null
-    Write-Host "Koneksi ke Microsoft Graph berhasil!" -ForegroundColor Green
+    Write-Host "Koneksi ke Microsoft Graph berhasil" -ForegroundColor Green
 } catch {
     Write-Error "Gagal terhubung ke Microsoft Graph."
     exit 1
 }
 
 # 2.2 KONEKSI ENTRA
-Write-Host "Menghubungkan ke Microsoft Entra..." -ForegroundColor Yellow
+Write-Host "Menghubungkan ke Microsoft Entra" -ForegroundColor Yellow
 try {
     Connect-Entra -scope 'User.Read.All', 'UserAuthenticationMethod.Read.All' -ErrorAction Stop
-    Write-Host "Koneksi Entra Berhasil." -ForegroundColor Green
+    Write-Host "Koneksi Microsoft Entra Berhasil." -ForegroundColor Green
 } catch {
     Write-Host "Peringatan: Gagal terkoneksi ke Entra." -ForegroundColor Yellow
 }
 
 # 2.3 KONEKSI EXCHANGE ONLINE (WAJIB - DENGAN ERROR HANDLING LENGKAP)
-Write-Host "Menghubungkan ke Exchange Online..." -ForegroundColor Yellow
+Write-Host "Menghubungkan ke Exchange Online" -ForegroundColor Yellow
 
 # Cek apakah sudah ada sesi Exchange Online
 $existingSession = Get-PSSession | Where-Object { $_.ConfigurationName -eq "Microsoft.Exchange" }
